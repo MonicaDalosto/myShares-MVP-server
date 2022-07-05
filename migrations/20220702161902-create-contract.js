@@ -13,7 +13,7 @@ module.exports = {
         allowNull: false
       },
       companyValuation: {
-        type: Sequelize.NUMERIC(12, 2),
+        type: Sequelize.FLOAT,
         allowNull: false
       },
       totalCompanyShares: {
@@ -21,7 +21,7 @@ module.exports = {
         allowNull: false
       },
       grantedShares: {
-        type: Sequelize.NUMERIC(12, 2),
+        type: Sequelize.FLOAT,
         allowNull: false
       },
       cliffDate: {

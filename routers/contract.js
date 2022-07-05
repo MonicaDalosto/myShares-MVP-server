@@ -7,6 +7,7 @@ const Contract = require('../models/').contract;
 const router = new Router();
 
 // http -v POST :4000/contracts signatureDate=2020-01-01 companyValuation=2000000 totalCompanyShares=500000 grantedShares=3000 cliffDate=2021-01-01 employeeId=6 Authorization:"Bearer token"
+// Create a new Contract:
 router.post('/', authMiddleware, async (request, response, next) => {
   const userIsAdmin = request.user.dataValues.isAdmin;
 

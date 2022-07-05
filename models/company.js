@@ -19,7 +19,7 @@ module.exports = (sequelize, DataTypes) => {
         defaultValue: 'myCompany BV'
       },
       currentValuation: {
-        type: DataTypes.NUMERIC(12, 2),
+        type: DataTypes.FLOAT,
         allowNull: false
       },
       totalCompanyShares: {
