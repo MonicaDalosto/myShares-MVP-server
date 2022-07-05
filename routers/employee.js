@@ -22,29 +22,33 @@ router.get('/', async (request, response, next) => {
 
 // http -v :4000/employees/calculation/1
 // Execute the User Shares calculation:
-router.get('/calculation/:id', async (request, response, next) => {
-  try {
-    const { id } = request.params;
-    // find user by pk
-    const user = await User.findByPk(id, { include: [Employee] });
-    // get his contracts
-    const contracts = await Contract.findAll({
-      where: { employeeId: user.employee.id }
-    });
-    const company = await Company.findByPk(1);
+router.get(
+  '/calculation/:id',
+  authMiddleware,
+  async (request, response, next) => {
+    try {
+      const { id } = request.params;
+      // find user by pk
+      const user = await User.findByPk(id, { include: [Employee] });
+      // get his contracts
+      const contracts = await Contract.findAll({
+        where: { employeeId: user.employee.id }
+      });
+      const company = await Company.findByPk(1);
 
-    // do math
-    const specificDate = new Date();
-    const employeeContractsSummary = calculateShares(
-      contracts,
-      company,
-      specificDate
-    );
-    // send data back
-    response.send(employeeContractsSummary);
-  } catch (error) {
-    next(error);
+      // do math
+      const specificDate = new Date();
+      const employeeContractsSummary = calculateShares(
+        contracts,
+        company,
+        specificDate
+      );
+      // send data back
+      response.send(employeeContractsSummary);
+    } catch (error) {
+      next(error);
+    }
   }
-});
+);
 
 module.exports = router;
