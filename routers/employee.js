@@ -74,7 +74,7 @@ router.get(
 // execute the shares calculation of the all employees:
 // http -v :4000/employees/allemployeescalculation Authorization:"Bearer token"
 router.get(
-  '/allemployeescalculation',
+  '/all-employees-calculation',
   authMiddleware,
   async (request, response, next) => {
     const userIsAdmin = request.user.dataValues.isAdmin;
