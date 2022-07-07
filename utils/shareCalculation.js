@@ -72,9 +72,12 @@ const calculateTheTotalEachEmployee = (
   };
 };
 
-const calculateSharesAllEmployees = (users, company, specificDate) => {
+const calculateSharesAllEmployees = (users, company) => {
   // map over user, get the employeeId >> return the user >> employee >> and its contracts with the summary;
   const fullDataUsers = users.map(user => {
+    const specificDate = user.employee.isActive
+      ? new Date()
+      : user.employee.endDate;
     // invoke the calculateShares function passing the userContracts >> return the summary
     const employeeContractsSummary = calculateShares(
       user.employee.contracts,
@@ -87,7 +90,6 @@ const calculateSharesAllEmployees = (users, company, specificDate) => {
       user.employee.id
     );
     // add all the totalOfEmployeeShares data inside the fullEmployee and return it;
-    delete user.dataValues['password']; // don't send back the password hash
     const fullUser = {
       ...user.dataValues,
       totalOfEmployeeShares: totalOfEmployeeShares

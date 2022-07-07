@@ -15,7 +15,10 @@ const router = new Router();
 // Get all the users/employees: http -v :4000/employees
 router.get('/', async (request, response, next) => {
   try {
-    const allEmployees = await User.findAll({ include: [Employee] });
+    const allEmployees = await User.findAll({
+      include: [Employee],
+      attributes: { exclude: ['password'] }
+    });
 
     return response.send(allEmployees);
   } catch (error) {
@@ -24,7 +27,7 @@ router.get('/', async (request, response, next) => {
   }
 });
 
-// http -v :4000/employees/calculation/3 Authorization:"Bearer token"
+// http -v :4000/employees/calculation/3?specificDate=2022-12-31 Authorization:"Bearer token"
 // Execute the User Shares calculation:
 router.get(
   '/calculation/:id',
@@ -36,13 +39,16 @@ router.get(
     try {
       // find user by pk and get his contracts
       const user = await User.findByPk(id, {
-        include: [{ model: Employee, include: [Contract] }]
+        include: [{ model: Employee, include: [Contract] }],
+        attributes: { exclude: ['password'] }
       });
-      delete user.dataValues['password']; // don't send back the password hash
       const company = await Company.findByPk(1);
+
+      const specificDate = user.employee.isActive
+        ? request.params.specificDate || new Date()
+        : user.employee.endDate; // this specific date can be past from the client, then i can use this endpoint to get the projection; but I need to think on the company valuation input from the employee;
+      // console.log(user);
       // do math
-      const specificDate = new Date(); // this specific date can be past from the client, then i can use this endpoint to get the projection; but I need to think on the company valuation input from the employee;
-      console.log(user);
       const employeeContractsSummary = calculateShares(
         user.employee.contracts,
         company,
@@ -81,17 +87,16 @@ router.get(
     try {
       // find all users and get all contracts
       const users = await User.findAll({
-        include: [{ model: Employee, include: [Contract] }]
+        include: [{ model: Employee, include: [Contract] }],
+        attributes: { exclude: ['password'] }
       });
 
       const company = await Company.findByPk(1);
 
-      const specificDate = new Date();
       // do math
       const allEmployeeContractsSummary = calculateSharesAllEmployees(
         users,
-        company,
-        specificDate
+        company
       );
       // send data back
       response.send(allEmployeeContractsSummary);
