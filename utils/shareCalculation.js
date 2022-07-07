@@ -43,7 +43,83 @@ function calculateShares(contracts, company, specificDate) {
   return employeeContractsSummary;
 }
 
-module.exports = { calculateShares };
+const calculateTheTotalEachEmployee = (
+  employeeContractsSummary,
+  employeeId
+) => {
+  // const employeeId = employeeContractsSummary.reduce(
+  //   (accum, contract) => (accum = contract.employeeId),
+  //   0
+  // );
+  const numberOfContracts = employeeContractsSummary.length;
+  const totalOfVirtualGrantedShares = employeeContractsSummary.reduce(
+    (accumulator, contract) => {
+      return accumulator + contract.grantedShares;
+    },
+    0
+  );
+  const totalOfVirtualOwnedShares = employeeContractsSummary.reduce(
+    (accumulator, contract) => {
+      return accumulator + contract.virtualOwnedShares;
+    },
+    0
+  );
+  const totalOfSharesValueBasedCompanyCurrentValuation =
+    employeeContractsSummary.reduce((accumulator, contract) => {
+      return accumulator + contract.sharesValueBasedCompanyCurrentValuation;
+    }, 0);
+
+  const totalOfEmployeeShares = {
+    employeeId,
+    numberOfContracts,
+    totalOfVirtualGrantedShares,
+    totalOfVirtualOwnedShares,
+    totalOfSharesValueBasedCompanyCurrentValuation
+  };
+  // console.log(totalOfEmployeeShares);
+  return totalOfEmployeeShares;
+};
+
+const calculateSharesAllEmployees = (
+  users,
+  contracts,
+  company,
+  specificDate
+) => {
+  // map over user, get the employeeId >> return the user >> employee >> and its contracts with the summary;
+  const fullDataUsers = users.map(user => {
+    // filter the contracts per employeeId >> return the contracts with the summary
+    // console.log('user.employee.id: ', user.employee.id);
+    const contractsPerEmployee = contracts.filter(
+      contract => user.employee.id === contract.employeeId
+    );
+    // console.log('contractsPerEmployee: ', contractsPerEmployee);
+    // invoke the calculateShares function passing the filteredContracts >> return the summary
+    const employeeContractsSummary = calculateShares(
+      contractsPerEmployee,
+      company,
+      specificDate
+    );
+
+    const totalOfEmployeeShares = calculateTheTotalEachEmployee(
+      employeeContractsSummary,
+      user.employee.id
+    );
+
+    // console.log('contractsPerEmployee: ', contractsPerEmployee);
+    // console.log('contracts summary: ', employeeContractsSummary);
+    // add all the data inside the fullEmployee and return it;
+    const fullUser = {
+      ...user.dataValues,
+      totalOfEmployeeShares: totalOfEmployeeShares
+    };
+    // console.log('fullUser: ', fullUser);
+    return fullUser;
+  });
+  return fullDataUsers;
+};
+
+module.exports = { calculateShares, calculateSharesAllEmployees };
 
 // call this from route and from email generation.
 
