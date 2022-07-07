@@ -4,7 +4,7 @@ function monthDiff(fromDate, toDate) {
   const momentFrom = moment(fromDate);
   const momentTo = moment(toDate);
 
-  return (months = momentTo.diff(momentFrom, 'months'));
+  return momentTo.diff(momentFrom, 'months');
 }
 
 // per user
@@ -31,12 +31,12 @@ function calculateShares(contracts, company, specificDate) {
     const sharesValueBasedCompanyCurrentValuation =
       virtualOwnedShares * currentSharesPrice;
 
-    return (contractSummary = {
+    return {
       ...contract.dataValues,
       numberOfMonthsAfterSignatureDate,
       virtualOwnedShares,
       sharesValueBasedCompanyCurrentValuation
-    });
+    };
   });
 
   // math
@@ -47,79 +47,61 @@ const calculateTheTotalEachEmployee = (
   employeeContractsSummary,
   employeeId
 ) => {
-  // const employeeId = employeeContractsSummary.reduce(
-  //   (accum, contract) => (accum = contract.employeeId),
-  //   0
-  // );
   const numberOfContracts = employeeContractsSummary.length;
   const totalOfVirtualGrantedShares = employeeContractsSummary.reduce(
-    (accumulator, contract) => {
-      return accumulator + contract.grantedShares;
-    },
+    (accumulator, contract) => accumulator + contract.grantedShares,
     0
   );
   const totalOfVirtualOwnedShares = employeeContractsSummary.reduce(
-    (accumulator, contract) => {
-      return accumulator + contract.virtualOwnedShares;
-    },
+    (accumulator, contract) => accumulator + contract.virtualOwnedShares,
     0
   );
   const totalOfSharesValueBasedCompanyCurrentValuation =
-    employeeContractsSummary.reduce((accumulator, contract) => {
-      return accumulator + contract.sharesValueBasedCompanyCurrentValuation;
-    }, 0);
+    employeeContractsSummary.reduce(
+      (accumulator, contract) =>
+        accumulator + contract.sharesValueBasedCompanyCurrentValuation,
+      0
+    );
 
-  const totalOfEmployeeShares = {
+  return {
     employeeId,
     numberOfContracts,
     totalOfVirtualGrantedShares,
     totalOfVirtualOwnedShares,
     totalOfSharesValueBasedCompanyCurrentValuation
   };
-  // console.log(totalOfEmployeeShares);
-  return totalOfEmployeeShares;
 };
 
-const calculateSharesAllEmployees = (
-  users,
-  contracts,
-  company,
-  specificDate
-) => {
+const calculateSharesAllEmployees = (users, company, specificDate) => {
   // map over user, get the employeeId >> return the user >> employee >> and its contracts with the summary;
   const fullDataUsers = users.map(user => {
-    // filter the contracts per employeeId >> return the contracts with the summary
-    // console.log('user.employee.id: ', user.employee.id);
-    const contractsPerEmployee = contracts.filter(
-      contract => user.employee.id === contract.employeeId
-    );
-    // console.log('contractsPerEmployee: ', contractsPerEmployee);
-    // invoke the calculateShares function passing the filteredContracts >> return the summary
+    // invoke the calculateShares function passing the userContracts >> return the summary
     const employeeContractsSummary = calculateShares(
-      contractsPerEmployee,
+      user.employee.contracts,
       company,
       specificDate
     );
-
+    // invoke the calculateTheTotalEachEmployee function passing the employeeContractsSummary
     const totalOfEmployeeShares = calculateTheTotalEachEmployee(
       employeeContractsSummary,
       user.employee.id
     );
-
-    // console.log('contractsPerEmployee: ', contractsPerEmployee);
-    // console.log('contracts summary: ', employeeContractsSummary);
-    // add all the data inside the fullEmployee and return it;
+    // add all the totalOfEmployeeShares data inside the fullEmployee and return it;
+    delete user.dataValues['password']; // don't send back the password hash
     const fullUser = {
       ...user.dataValues,
       totalOfEmployeeShares: totalOfEmployeeShares
     };
-    // console.log('fullUser: ', fullUser);
     return fullUser;
   });
   return fullDataUsers;
 };
 
-module.exports = { calculateShares, calculateSharesAllEmployees };
+module.exports = {
+  calculateShares,
+  calculateTheTotalEachEmployee,
+  calculateSharesAllEmployees
+};
 
 // call this from route and from email generation.
 

@@ -6,12 +6,13 @@ const Contract = require('../models/').contract;
 const Company = require('../models/').company;
 const {
   calculateShares,
+  calculateTheTotalEachEmployee,
   calculateSharesAllEmployees
 } = require('../utils/shareCalculation');
 
 const router = new Router();
 
-// Get all the users/employees:
+// Get all the users/employees: http -v :4000/employees
 router.get('/', async (request, response, next) => {
   try {
     const allEmployees = await User.findAll({ include: [Employee] });
@@ -32,29 +33,32 @@ router.get(
     const userIsAdmin = request.user.dataValues.isAdmin;
     const { id } = request.params;
 
-    if (!userIsAdmin) {
-      return response
-        .status(403)
-        .send({ message: 'Denied: You are not authorized to do this action!' });
-    }
     try {
-      // find user by pk
-      const user = await User.findByPk(id, { include: [Employee] });
-      // get his contracts
-      const contracts = await Contract.findAll({
-        where: { employeeId: user.employee.id }
+      // find user by pk and get his contracts
+      const user = await User.findByPk(id, {
+        include: [{ model: Employee, include: [Contract] }]
       });
+      delete user.dataValues['password']; // don't send back the password hash
       const company = await Company.findByPk(1);
-
       // do math
       const specificDate = new Date(); // this specific date can be past from the client, then i can use this endpoint to get the projection; but I need to think on the company valuation input from the employee;
+      console.log(user);
       const employeeContractsSummary = calculateShares(
-        contracts,
+        user.employee.contracts,
         company,
         specificDate
       );
+      const totalContractsSummary = calculateTheTotalEachEmployee(
+        employeeContractsSummary,
+        user.employee.id
+      );
       // send data back
-      response.send(employeeContractsSummary);
+      const fullContractsSummary = {
+        employeeContractsSummary, // [{}, {} ,{}]
+        totalContractsSummary // 23534
+      };
+
+      response.send(fullContractsSummary);
     } catch (error) {
       next(error);
     }
@@ -75,17 +79,17 @@ router.get(
         .send({ message: 'Denied: You are not authorized to do this action!' });
     }
     try {
-      // find all users
-      const users = await User.findAll({ include: [Employee] });
-      // get all contracts
-      const contracts = await Contract.findAll();
+      // find all users and get all contracts
+      const users = await User.findAll({
+        include: [{ model: Employee, include: [Contract] }]
+      });
+
       const company = await Company.findByPk(1);
 
       const specificDate = new Date();
       // do math
       const allEmployeeContractsSummary = calculateSharesAllEmployees(
         users,
-        contracts,
         company,
         specificDate
       );
@@ -98,3 +102,18 @@ router.get(
 );
 
 module.exports = router;
+
+/// ------- Matias code of allEmployees calculation -------- ///
+// const users = [];
+
+// const companyTemp = await Company.findByPk(1);
+
+// const perUser = users.map((u) => {
+//   const contracts = await Contract.findAll({
+//     where: { employeeId: u.employee.id }
+//   });
+
+//   const calculation = calculateShares(contracts, company, new Date());
+//   return { userId: u.id, calculation };
+// })
+// ---- END MATIAS CODE -------- //
