@@ -72,6 +72,35 @@ const calculateTheTotalEachEmployee = (
   };
 };
 
+const calculateSharesSpecificEmployee = (user, company, specificDate) => {
+  const employeeContractsSummary = calculateShares(
+    user.employee.contracts,
+    company,
+    specificDate
+  );
+
+  // const totalContractsSummary = calculateTheTotalEachEmployee(
+  //   employeeContractsSummary,
+  //   user.employee.id
+  // );
+
+  const grantedXOwnedShares = employeeContractsSummary.map(contract => {
+    return {
+      signatureDate: moment(contract.signatureDate).format('DD/MM/YYYY'),
+      grantedShares: contract.grantedShares,
+      ownedShares: contract.virtualOwnedShares
+    };
+  });
+
+  const fullContractsSummary = {
+    employeeContractsSummary, // [{}, {} ,{}]
+    // totalContractsSummary, // 23534
+    grantedXOwnedShares
+  };
+
+  return fullContractsSummary;
+};
+
 const calculateSharesAllEmployees = (users, company) => {
   // map over user, get the employeeId >> return the user >> employee >> and its contracts with the summary;
   const fullDataUsers = users.map(user => {
@@ -84,11 +113,13 @@ const calculateSharesAllEmployees = (users, company) => {
       company,
       specificDate
     );
+    console.log(employeeContractsSummary);
     // invoke the calculateTheTotalEachEmployee function passing the employeeContractsSummary
     const totalOfEmployeeShares = calculateTheTotalEachEmployee(
       employeeContractsSummary,
       user.employee.id
     );
+
     // add all the totalOfEmployeeShares data inside the fullEmployee and return it;
     const fullUser = {
       ...user.dataValues,
@@ -102,6 +133,7 @@ const calculateSharesAllEmployees = (users, company) => {
 module.exports = {
   calculateShares,
   calculateTheTotalEachEmployee,
+  calculateSharesSpecificEmployee,
   calculateSharesAllEmployees
 };
 

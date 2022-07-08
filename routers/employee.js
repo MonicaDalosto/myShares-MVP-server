@@ -7,6 +7,7 @@ const Company = require('../models/').company;
 const {
   calculateShares,
   calculateTheTotalEachEmployee,
+  calculateSharesSpecificEmployee,
   calculateSharesAllEmployees
 } = require('../utils/shareCalculation');
 
@@ -27,6 +28,7 @@ router.get('/', async (request, response, next) => {
   }
 });
 
+// http -v :4000/employees/calculation/1 Authorization:"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTY1NzI2NzQwMSwiZXhwIjoxNjU3Mjc0NjAxfQ.5JU_lp0diLuHwvmGLfv9SwVwR8zvvlopRATB7yh56fI"
 // http -v :4000/employees/calculation/3?specificDate=2022-12-31 Authorization:"Bearer token"
 // Execute the User Shares calculation:
 router.get(
@@ -47,23 +49,29 @@ router.get(
       const specificDate = user.employee.isActive
         ? request.params.specificDate || new Date()
         : user.employee.endDate; // this specific date can be past from the client, then i can use this endpoint to get the projection; but I need to think on the company valuation input from the employee;
-      // console.log(user);
       // do math
-      const employeeContractsSummary = calculateShares(
-        user.employee.contracts,
+      const fullContractsSummary = calculateSharesSpecificEmployee(
+        user,
         company,
         specificDate
       );
-      const totalContractsSummary = calculateTheTotalEachEmployee(
-        employeeContractsSummary,
-        user.employee.id
-      );
-      // send data back
-      const fullContractsSummary = {
-        employeeContractsSummary, // [{}, {} ,{}]
-        totalContractsSummary // 23534
-      };
 
+      // previous code, without the
+      // const employeeContractsSummary = calculateShares(
+      //   user.employee.contracts,
+      //   company,
+      //   specificDate
+      // );
+
+      // const totalContractsSummary = calculateTheTotalEachEmployee(
+      //   employeeContractsSummary,
+      //   user.employee.id
+      // );
+      // send data back
+      // const fullContractsSummary = {
+      //   employeeContractsSummary, // [{}, {} ,{}]
+      //   totalContractsSummary // 23534
+      // };
       response.send(fullContractsSummary);
     } catch (error) {
       next(error);
