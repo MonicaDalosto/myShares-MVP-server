@@ -113,7 +113,7 @@ const calculateSharesAllEmployees = (users, company) => {
       company,
       specificDate
     );
-    console.log(employeeContractsSummary);
+    // console.log(employeeContractsSummary);
     // invoke the calculateTheTotalEachEmployee function passing the employeeContractsSummary
     const totalOfEmployeeShares = calculateTheTotalEachEmployee(
       employeeContractsSummary,
@@ -123,6 +123,7 @@ const calculateSharesAllEmployees = (users, company) => {
     // add all the totalOfEmployeeShares data inside the fullEmployee and return it;
     const fullUser = {
       ...user.dataValues,
+      employeeContractsSummary: employeeContractsSummary,
       totalOfEmployeeShares: totalOfEmployeeShares
     };
     return fullUser;

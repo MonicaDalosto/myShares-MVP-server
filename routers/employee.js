@@ -1,50 +1,62 @@
 const { Router } = require('express');
 const authMiddleware = require('../auth/middleware');
+const userIsAdminMidd = require('../auth/userIsAdminMiddleware');
 const User = require('../models/').user;
 const Employee = require('../models/').employee;
 const Contract = require('../models/').contract;
 const Company = require('../models/').company;
 const {
-  calculateShares,
-  calculateTheTotalEachEmployee,
   calculateSharesSpecificEmployee,
   calculateSharesAllEmployees
 } = require('../utils/shareCalculation');
+const { DEFAULT_COMPANY } = require('../config/constants');
 
 const router = new Router();
 
 // Get all the users/employees: http -v :4000/employees
-router.get('/', async (request, response, next) => {
-  try {
-    const allEmployees = await User.findAll({
-      include: [Employee],
-      attributes: { exclude: ['password'] }
-    });
-
-    return response.send(allEmployees);
-  } catch (error) {
-    console.log(error);
-    return response.status(400).send('Something went wrong!');
-  }
-});
-
-// http -v :4000/employees/calculation/1 Authorization:"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTY1NzI2NzQwMSwiZXhwIjoxNjU3Mjc0NjAxfQ.5JU_lp0diLuHwvmGLfv9SwVwR8zvvlopRATB7yh56fI"
-// http -v :4000/employees/calculation/3?specificDate=2022-12-31 Authorization:"Bearer token"
-// Execute the User Shares calculation:
+// Maybe in the future, I won't need this endpoint anymore
 router.get(
-  '/calculation/:id',
+  '/',
+  authMiddleware,
+  userIsAdminMidd,
+  async (request, response, next) => {
+    try {
+      const allEmployees = await User.findAll({
+        include: [Employee],
+        attributes: { exclude: ['password'] }
+      });
+
+      return response.send(allEmployees);
+    } catch (error) {
+      console.log(error);
+      return response.status(400).send('Something went wrong!');
+    }
+  }
+);
+
+// http -v :4000/employees/calculation/1 Authorization:"Bearer token"
+// http -v :4000/employees/calculation/3?specificDate=2022-12-31 Authorization:"Bearer token"
+// Execute the User Shares calculation: (the ? at the endpoint makes the id optional)
+router.get(
+  '/calculation/:specificDate?:id?',
   authMiddleware,
   async (request, response, next) => {
     const userIsAdmin = request.user.dataValues.isAdmin;
-    const { id } = request.params;
+    const id =
+      userIsAdmin && request.params.id ? request.params.id : request.user.id;
 
     try {
       // find user by pk and get his contracts
       const user = await User.findByPk(id, {
-        include: [{ model: Employee, include: [Contract] }],
+        include: [
+          {
+            model: Employee,
+            include: [Contract]
+          }
+        ],
         attributes: { exclude: ['password'] }
       });
-      const company = await Company.findByPk(1);
+      const company = await Company.findByPk(DEFAULT_COMPANY);
 
       const specificDate = user.employee.isActive
         ? request.params.specificDate || new Date()
@@ -84,6 +96,7 @@ router.get(
 router.get(
   '/all-employees-calculation',
   authMiddleware,
+  userIsAdminMidd,
   async (request, response, next) => {
     const userIsAdmin = request.user.dataValues.isAdmin;
 
@@ -95,11 +108,16 @@ router.get(
     try {
       // find all users and get all contracts
       const users = await User.findAll({
-        include: [{ model: Employee, include: [Contract] }],
+        include: [
+          {
+            model: Employee,
+            include: [Contract]
+          }
+        ],
         attributes: { exclude: ['password'] }
       });
 
-      const company = await Company.findByPk(1);
+      const company = await Company.findByPk(DEFAULT_COMPANY);
 
       // do math
       const allEmployeeContractsSummary = calculateSharesAllEmployees(
