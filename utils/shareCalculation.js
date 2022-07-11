@@ -8,13 +8,14 @@ function monthDiff(fromDate, toDate) {
 }
 
 // per user
-function calculateShares(contracts, company, specificDate) {
+function calculateShares(user, company, specificDate) {
   const numberMonthsOwnedFullContract = 60;
   const numberMonthsCliffPeriod = 12;
+
   const currentSharesPrice =
     company.currentValuation / company.totalCompanyShares;
 
-  const employeeContractsSummary = contracts.map(contract => {
+  const employeeContractsSummary = user.employee.contracts.map(contract => {
     const { signatureDate, grantedShares } = contract;
 
     const numberOfMonthsAfterSignatureDate = monthDiff(
@@ -32,7 +33,13 @@ function calculateShares(contracts, company, specificDate) {
       virtualOwnedShares * currentSharesPrice;
 
     return {
-      ...contract.dataValues,
+      employeeId: user.employee.id,
+      name: user.name,
+      department: user.employee.department,
+      contractId: contract.id,
+      signatureDate: moment(contract.signatureDate).format('DD/MM/YYYY'),
+      grantedShares: contract.grantedShares,
+      cliffDate: moment(contract.cliffDate).format('DD/MM/YYYY'),
       numberOfMonthsAfterSignatureDate,
       virtualOwnedShares,
       sharesValueBasedCompanyCurrentValuation
@@ -43,10 +50,7 @@ function calculateShares(contracts, company, specificDate) {
   return employeeContractsSummary;
 }
 
-const calculateTheTotalEachEmployee = (
-  employeeContractsSummary,
-  employeeId
-) => {
+const calculateTheTotalEachEmployee = (employeeContractsSummary, user) => {
   const numberOfContracts = employeeContractsSummary.length;
   const totalOfVirtualGrantedShares = employeeContractsSummary.reduce(
     (accumulator, contract) => accumulator + contract.grantedShares,
@@ -64,7 +68,9 @@ const calculateTheTotalEachEmployee = (
     );
 
   return {
-    employeeId,
+    employeeId: user.employee.id,
+    name: user.name,
+    department: user.employee.department,
     numberOfContracts,
     totalOfVirtualGrantedShares,
     totalOfVirtualOwnedShares,
@@ -74,7 +80,8 @@ const calculateTheTotalEachEmployee = (
 
 const calculateSharesSpecificEmployee = (user, company, specificDate) => {
   const employeeContractsSummary = calculateShares(
-    user.employee.contracts,
+    user,
+    // user.employee.contracts,
     company,
     specificDate
   );
@@ -109,7 +116,8 @@ const calculateSharesAllEmployees = (users, company) => {
       : user.employee.endDate;
     // invoke the calculateShares function passing the userContracts >> return the summary
     const employeeContractsSummary = calculateShares(
-      user.employee.contracts,
+      user,
+      // user.employee.contracts,
       company,
       specificDate
     );
@@ -117,17 +125,18 @@ const calculateSharesAllEmployees = (users, company) => {
     // invoke the calculateTheTotalEachEmployee function passing the employeeContractsSummary
     const totalOfEmployeeShares = calculateTheTotalEachEmployee(
       employeeContractsSummary,
-      user.employee.id
+      user
     );
 
     // add all the totalOfEmployeeShares data inside the fullEmployee and return it;
     const fullUser = {
-      ...user.dataValues,
+      // ...user.dataValues,
       employeeContractsSummary: employeeContractsSummary,
       totalOfEmployeeShares: totalOfEmployeeShares
     };
     return fullUser;
   });
+
   return fullDataUsers;
 };
 
