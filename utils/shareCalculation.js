@@ -68,6 +68,7 @@ const calculateTheTotalEachEmployee = (employeeContractsSummary, user) => {
     );
 
   return {
+    userId: user.id,
     employeeId: user.employee.id,
     name: user.name,
     department: user.employee.department,
@@ -100,6 +101,7 @@ const calculateSharesSpecificEmployee = (user, company, specificDate) => {
   });
 
   const fullContractsSummary = {
+    name: user.name,
     employeeContractsSummary, // [{}, {} ,{}]
     // totalContractsSummary, // 23534
     grantedXOwnedShares

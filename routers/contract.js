@@ -52,12 +52,13 @@ router.post(
 // http -v :4000/employees/calculation/3?specificDate=2022-12-31 Authorization:"Bearer token"
 // Execute the User Shares calculation: (the ? at the endpoint makes the id optional)
 router.get(
-  '/calculation/:specificDate?:id?',
+  '/calculation/:id?:specificDate?',
   authMiddleware,
   async (request, response, next) => {
     const userIsAdmin = request.user.dataValues.isAdmin;
     const id =
       userIsAdmin && request.params.id ? request.params.id : request.user.id;
+    console.log('the url inside endpoint: ', request.params);
 
     try {
       // find user by pk and get his contracts

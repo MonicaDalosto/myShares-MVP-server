@@ -49,7 +49,7 @@ router.post('/signup', authMiddleware, async (request, response) => {
 
   const { name, email, department, password, isAdmin, startDate } =
     request.body;
-  // console.log(name, email, department, password, isAdmin, startDate);
+
   if (!name || !email || !password || !department || !startDate) {
     return response
       .status(400)
@@ -73,19 +73,6 @@ router.post('/signup', authMiddleware, async (request, response) => {
     });
 
     response.status(201).send('Successfull! Employee has been created!');
-
-    // delete newUser.dataValues['password']; // don't send back the password hash
-
-    // const fullEmployee = {
-    //   ...newUser.dataValues,
-    //   employee: newEmployee.dataValues
-    // };
-
-    // console.log('fullEmployee: ', fullEmployee);
-
-    // const token = toJWT({ userId: newUser.id });
-
-    // response.status(201).json({ token, user: newUser.dataValues });
   } catch (error) {
     if (error.name === 'SequelizeUniqueConstraintError') {
       return response
