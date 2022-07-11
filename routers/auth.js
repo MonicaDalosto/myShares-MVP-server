@@ -49,7 +49,7 @@ router.post('/signup', authMiddleware, async (request, response) => {
 
   const { name, email, department, password, isAdmin, startDate } =
     request.body;
-  console.log(name, email, department, password, isAdmin, startDate);
+  // console.log(name, email, department, password, isAdmin, startDate);
   if (!name || !email || !password || !department || !startDate) {
     return response
       .status(400)

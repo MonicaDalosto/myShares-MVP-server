@@ -14,7 +14,7 @@ module.exports = {
         defaultValue: 'myCompany BV'
       },
       currentValuation: {
-        type: Sequelize.NUMERIC(12, 2),
+        type: Sequelize.FLOAT,
         allowNull: false
       },
       totalCompanyShares: {
