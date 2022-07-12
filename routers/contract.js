@@ -48,8 +48,8 @@ router.post(
   }
 );
 
-// http -v :4000/employees/calculation/1 Authorization:"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTY1NzYxMjI2MSwiZXhwIjoxNjU3NjE5NDYxfQ.8h7hlPKpswg8pLGe_vZBZ1lleDGGkg9eoBbAy4kTRc0"
-// http -v :4000/employees/calculation/3?specificDate=2022-12-31 Authorization:"Bearer token"
+// http -v :4000/contracts/calculation/1 Authorization:"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTY1NzYxMjI2MSwiZXhwIjoxNjU3NjE5NDYxfQ.8h7hlPKpswg8pLGe_vZBZ1lleDGGkg9eoBbAy4kTRc0"
+// http -v :4000/contracts/calculation/3?specificDate=2022-12-31 Authorization:"Bearer token"
 // Execute the User Shares calculation: (the ? at the endpoint makes the id optional)
 router.get(
   '/calculation/:id?:projectedValuation?:projectedDate?',
