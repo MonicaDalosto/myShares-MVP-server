@@ -75,9 +75,9 @@ router.post(
         .send({ message: 'Successfull! Employee has been created!' });
     } catch (error) {
       if (error.name === 'SequelizeUniqueConstraintError') {
-        return response
-          .status(400)
-          .send({ message: 'There is an existing account with this email' });
+        return response.status(400).send({
+          message: 'There is an existing account with this name and/or email'
+        });
       }
 
       return response
