@@ -87,7 +87,11 @@ router.put(
 
       const employee = await Employee.findOne({ where: { userId: user.id } });
 
-      await user.update({ name, email, isAdmin });
+      const setIsAdmin = !isActive ? false : isAdmin;
+
+      console.log('setIsAdmin: ', setIsAdmin);
+
+      await user.update({ name, email, isAdmin: setIsAdmin });
 
       await employee.update({
         startDate,
