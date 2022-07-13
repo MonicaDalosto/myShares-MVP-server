@@ -98,4 +98,50 @@ router.put(
   }
 );
 
+//
+
+// http -v DELETE :4000/employees/6  Authorization:"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTY1NzY5OTE3NiwiZXhwIjoxNjU3NzA2Mzc2fQ.K41KDz2HOHG8VGptnOmtu6ToR3oT9UE0IvXczqZXhFA"
+router.delete(
+  '/:id',
+  authMiddleware,
+  userIsAdminMidd,
+  async (request, response, next) => {
+    try {
+      const { id } = request.params;
+      const userToDelete = await User.findByPk(id);
+
+      if (!userToDelete) {
+        return response.status(404).send('User not found!');
+      }
+
+      const employeeToDelete = await Employee.findOne({
+        where: { userId: userToDelete.id }
+      });
+
+      const employeeHasContracts = await Contract.findOne({
+        where: { employeeId: employeeToDelete.id }
+      });
+      console.log('employeeHasContracts? ', employeeHasContracts);
+
+      if (
+        employeeHasContracts
+        // Object.keys(employeeHasContracts).length > 0
+      ) {
+        return response
+          .status(400)
+          .send("User can't be deleted because still has active contracts!");
+      }
+
+      await userToDelete.destroy();
+
+      await employeeToDelete.destroy();
+
+      return response.send('User terminated!');
+    } catch (error) {
+      console.log('error from the delete endpoint: ', error);
+      next(error);
+    }
+  }
+);
+
 module.exports = router;

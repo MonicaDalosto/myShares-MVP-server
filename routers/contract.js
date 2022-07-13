@@ -59,7 +59,7 @@ router.get(
     const id =
       userIsAdmin && request.query.id ? request.query.id : request.user.id;
 
-    console.log('the request inside the endpoint: ', request.query);
+    // console.log('the request inside the endpoint: ', request.query);
 
     try {
       // find user by pk and get his contracts
@@ -82,14 +82,14 @@ router.get(
         ? request.query.projectedDate || new Date()
         : user.employee.endDate; // this projected date can be past from the client, then i can use this endpoint to get the projection;
 
-      console.log(
-        'the values inside the endpoint: companyValuation ',
-        companyValuation,
-        'specificDate ',
-        specificDate,
-        'id ',
-        id
-      );
+      // console.log(
+      //   'the values inside the endpoint: companyValuation ',
+      //   companyValuation,
+      //   'specificDate ',
+      //   specificDate,
+      //   'id ',
+      //   id
+      // );
 
       // do math
       const fullContractsSummary = calculateSharesSpecificEmployee(
@@ -106,7 +106,7 @@ router.get(
 );
 
 // execute the shares calculation of the all employees:
-// http -v :4000/employees/allemployeescalculation Authorization:"Bearer token"
+// http -v :4000/contracts/allemployeescalculation Authorization:"Bearer token"
 router.get(
   '/all-employees-calculation',
   authMiddleware,
@@ -135,6 +135,30 @@ router.get(
       // send data back
       response.send(allEmployeeContractsSummary);
     } catch (error) {
+      next(error);
+    }
+  }
+);
+
+// http -v DELETE :4000/contracts/15 Authorization:"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTY1NzcwNDg0NiwiZXhwIjoxNjU3NzEyMDQ2fQ.iFz5VwFY9kWK6E3v8vQc7v5B8MXwJFOY6BDp3vAZ6oE"
+router.delete(
+  '/:id',
+  authMiddleware,
+  userIsAdminMidd,
+  async (request, response, next) => {
+    try {
+      const { id } = request.params;
+      const contractToDelete = await Contract.findByPk(id);
+
+      if (!contractToDelete) {
+        return response.status(404).send('Contract not found!');
+      }
+
+      await contractToDelete.destroy();
+
+      return response.send({ message: 'Contract terminated!' });
+    } catch (error) {
+      console.log('error from the delete endpoint: ', error);
       next(error);
     }
   }
