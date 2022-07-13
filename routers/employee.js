@@ -2,11 +2,12 @@ const { Router } = require('express');
 const authMiddleware = require('../auth/middleware');
 const userIsAdminMidd = require('../auth/userIsAdminMiddleware');
 const moment = require('moment');
+const { Op } = require('sequelize');
+const { DEFAULT_COMPANY } = require('../config/constants');
 const User = require('../models/').user;
 const Employee = require('../models/').employee;
 const Contract = require('../models/').contract;
 const Company = require('../models/').company;
-const { DEFAULT_COMPANY } = require('../config/constants');
 
 const router = new Router();
 
@@ -105,7 +106,7 @@ router.put(
 
 //
 
-// http -v DELETE :4000/employees/6  Authorization:"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTY1NzY5OTE3NiwiZXhwIjoxNjU3NzA2Mzc2fQ.K41KDz2HOHG8VGptnOmtu6ToR3oT9UE0IvXczqZXhFA"
+// http -v DELETE :4000/employees/delete/12  Authorization:"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTY1NzcxMjE5NCwiZXhwIjoxNjU3NzE5Mzk0fQ.pZ5_yyHab2pWg6CmrQVRDT8CpM5xHDl8ORxc6BczBEQ"
 router.delete(
   '/delete/:id',
   authMiddleware,
@@ -117,6 +118,35 @@ router.delete(
 
       if (!userToDelete) {
         return response.status(404).send({ message: 'User not found!' });
+      }
+
+      if (userToDelete.isAdmin) {
+        const checkOtherAdmin = await User.findAll({
+          where: {
+            id: {
+              [Op.not]: userToDelete.id
+            },
+            isAdmin: {
+              [Op.is]: true
+            }
+          },
+          include: {
+            model: Employee,
+            where: { isActive: true }
+          }
+        });
+
+        // console.log(
+        //   'checkOtherAdmin: ',
+        //   checkOtherAdmin.length,
+        //   checkOtherAdmin
+        // );
+
+        if (checkOtherAdmin.length === 0) {
+          return response.status(400).send({
+            message: "User can't be deleted because is the last Admin!"
+          });
+        }
       }
 
       const employeeToDelete = await Employee.findOne({

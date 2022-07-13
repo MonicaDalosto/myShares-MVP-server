@@ -40,7 +40,7 @@ router.post('/login', async (req, res, next) => {
 // I will use this router, when the admin creates the new employee:
 // http -v POST :4000/auth/signup name=kiwi email=kiwi@kiwi.com department=operations password=kiwi isAdmin=false startDate=2019-03-01 Authorization:"Bearer token"
 router.post(
-  '/signup',
+  '/createEmployee',
   authMiddleware,
   userIsAdminMidd,
   async (request, response) => {
