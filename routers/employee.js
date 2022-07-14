@@ -67,6 +67,12 @@ router.put(
       request.body;
 
     try {
+      if (Number(id) === request.user.dataValues.id && !isActive) {
+        return response
+          .status(400)
+          .send({ message: "You can't change yourself to inactive!" });
+      }
+
       if (
         !name ||
         !email ||
@@ -76,20 +82,22 @@ router.put(
         (!isActive && !endDate) ||
         (isActive && endDate)
       ) {
-        return response.status(400).send('Please provide valid data!');
+        return response
+          .status(400)
+          .send({ message: 'Please provide valid data!' });
       }
 
       const user = await User.findByPk(id);
 
       if (!user) {
-        return response.status(400).send('User was not found!');
+        return response.status(400).send({ message: 'User was not found!' });
       }
 
       const employee = await Employee.findOne({ where: { userId: user.id } });
 
       const setIsAdmin = !isActive ? false : isAdmin;
 
-      console.log('setIsAdmin: ', setIsAdmin);
+      // console.log('setIsAdmin: ', setIsAdmin);
 
       await user.update({ name, email, isAdmin: setIsAdmin });
 
@@ -100,10 +108,10 @@ router.put(
         endDate
       });
 
-      return response.send('User Updated!!!');
+      return response.send({ messsage: 'User Updated!!!' });
     } catch (error) {
       console.log(error);
-      return response.status(400).send('Something went wrong!');
+      return response.status(400).send({ message: 'Something went wrong!' });
     }
   }
 );
