@@ -41,9 +41,9 @@ function calculateShares(
       name: user.name,
       department: user.employee.department,
       contractId: contract.id,
-      signatureDate: moment(contract.signatureDate).format('DD/MM/YYYY'),
+      signatureDate: contract.signatureDate,
       grantedShares: contract.grantedShares,
-      cliffDate: moment(contract.cliffDate).format('DD/MM/YYYY'),
+      cliffDate: contract.cliffDate,
       numberOfMonthsAfterSignatureDate,
       virtualOwnedShares,
       sharesValueBasedCompanyCurrentValuation

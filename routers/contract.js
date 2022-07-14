@@ -126,6 +126,8 @@ router.get(
 
       const company = await Company.findByPk(DEFAULT_COMPANY);
 
+      // console.log('users inside the endpoint: ', users);
+
       // do math
       const allEmployeeContractsSummary = calculateSharesAllEmployees(
         users,
