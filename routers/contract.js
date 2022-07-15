@@ -48,16 +48,18 @@ router.post(
   }
 );
 
-// http -v :4000/employees/calculation/1 Authorization:"Bearer token"
-// http -v :4000/employees/calculation/3?specificDate=2022-12-31 Authorization:"Bearer token"
+// http -v :4000/contracts/calculation/1 Authorization:"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTY1NzYxMjI2MSwiZXhwIjoxNjU3NjE5NDYxfQ.8h7hlPKpswg8pLGe_vZBZ1lleDGGkg9eoBbAy4kTRc0"
+// http -v :4000/contracts/calculation/3?specificDate=2022-12-31 Authorization:"Bearer token"
 // Execute the User Shares calculation: (the ? at the endpoint makes the id optional)
 router.get(
-  '/calculation/:specificDate?:id?',
+  '/calculation/:id?:projectedValuation?:projectedDate?',
   authMiddleware,
   async (request, response, next) => {
     const userIsAdmin = request.user.dataValues.isAdmin;
     const id =
-      userIsAdmin && request.params.id ? request.params.id : request.user.id;
+      userIsAdmin && request.query.id ? request.query.id : request.user.id;
+
+    // console.log('the request inside the endpoint: ', request.query);
 
     try {
       // find user by pk and get his contracts
@@ -72,32 +74,30 @@ router.get(
       });
       const company = await Company.findByPk(DEFAULT_COMPANY);
 
+      const companyValuation = request.query.projectedValuation
+        ? Number(request.query.projectedValuation)
+        : company.currentValuation; // this projected valuation can be past from the client, then i can use this endpoint to get the projection;
+
       const specificDate = user.employee.isActive
-        ? request.params.specificDate || new Date()
-        : user.employee.endDate; // this specific date can be past from the client, then i can use this endpoint to get the projection; but I need to think on the company valuation input from the employee;
+        ? request.query.projectedDate || new Date()
+        : user.employee.endDate; // this projected date can be past from the client, then i can use this endpoint to get the projection;
+
+      // console.log(
+      //   'the values inside the endpoint: companyValuation ',
+      //   companyValuation,
+      //   'specificDate ',
+      //   specificDate,
+      //   'id ',
+      //   id
+      // );
+
       // do math
       const fullContractsSummary = calculateSharesSpecificEmployee(
         user,
-        company,
+        companyValuation,
+        company.totalCompanyShares,
         specificDate
       );
-
-      // previous code, without the
-      // const employeeContractsSummary = calculateShares(
-      //   user.employee.contracts,
-      //   company,
-      //   specificDate
-      // );
-
-      // const totalContractsSummary = calculateTheTotalEachEmployee(
-      //   employeeContractsSummary,
-      //   user.employee.id
-      // );
-      // send data back
-      // const fullContractsSummary = {
-      //   employeeContractsSummary, // [{}, {} ,{}]
-      //   totalContractsSummary // 23534
-      // };
       response.send(fullContractsSummary);
     } catch (error) {
       next(error);
@@ -106,7 +106,7 @@ router.get(
 );
 
 // execute the shares calculation of the all employees:
-// http -v :4000/employees/allemployeescalculation Authorization:"Bearer token"
+// http -v :4000/contracts/allemployeescalculation Authorization:"Bearer token"
 router.get(
   '/all-employees-calculation',
   authMiddleware,
@@ -126,14 +126,41 @@ router.get(
 
       const company = await Company.findByPk(DEFAULT_COMPANY);
 
+      // console.log('users inside the endpoint: ', users);
+
       // do math
       const allEmployeeContractsSummary = calculateSharesAllEmployees(
         users,
-        company
+        company.currentValuation,
+        company.totalCompanyShares
       );
       // send data back
       response.send(allEmployeeContractsSummary);
     } catch (error) {
+      next(error);
+    }
+  }
+);
+
+// http -v DELETE :4000/contracts/15 Authorization:"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTY1NzcwNDg0NiwiZXhwIjoxNjU3NzEyMDQ2fQ.iFz5VwFY9kWK6E3v8vQc7v5B8MXwJFOY6BDp3vAZ6oE"
+router.delete(
+  '/:id',
+  authMiddleware,
+  userIsAdminMidd,
+  async (request, response, next) => {
+    try {
+      const { id } = request.params;
+      const contractToDelete = await Contract.findByPk(id);
+
+      if (!contractToDelete) {
+        return response.status(404).send('Contract not found!');
+      }
+
+      await contractToDelete.destroy();
+
+      return response.send({ message: 'Contract terminated!' });
+    } catch (error) {
+      console.log('error from the delete endpoint: ', error);
       next(error);
     }
   }

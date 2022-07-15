@@ -13,7 +13,7 @@ const router = new Router();
 // 2 (Done) - Extract the code that validate if the user is admin to a middleware to avoid repeat the validation between multiple files.
 
 // Get the information about the Company:
-router.get('/', async (request, response, next) => {
+router.get('/', authMiddleware, async (request, response, next) => {
   try {
     const company = await Company.findByPk(DEFAULT_COMPANY);
 

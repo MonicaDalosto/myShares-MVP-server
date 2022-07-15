@@ -2,6 +2,7 @@ const bcrypt = require('bcrypt');
 const { Router } = require('express');
 const { toJWT } = require('../auth/jwt');
 const authMiddleware = require('../auth/middleware');
+const userIsAdminMidd = require('../auth/userIsAdminMiddleware');
 const User = require('../models/').user;
 const Employee = require('../models/').employee;
 const { SALT_ROUNDS } = require('../config/constants');
@@ -38,66 +39,53 @@ router.post('/login', async (req, res, next) => {
 
 // I will use this router, when the admin creates the new employee:
 // http -v POST :4000/auth/signup name=kiwi email=kiwi@kiwi.com department=operations password=kiwi isAdmin=false startDate=2019-03-01 Authorization:"Bearer token"
-router.post('/signup', authMiddleware, async (request, response) => {
-  const userIsAdmin = request.user.dataValues.isAdmin;
+router.post(
+  '/createEmployee',
+  authMiddleware,
+  userIsAdminMidd,
+  async (request, response) => {
+    const { name, email, department, password, isAdmin, startDate } =
+      request.body;
 
-  if (!userIsAdmin) {
-    return response
-      .status(403)
-      .send({ message: 'Denied: You are not authorized to do this action!' });
-  }
+    console.log(name, email, department, password, isAdmin, startDate);
 
-  const { name, email, department, password, isAdmin, startDate } =
-    request.body;
-  // console.log(name, email, department, password, isAdmin, startDate);
-  if (!name || !email || !password || !department || !startDate) {
-    return response
-      .status(400)
-      .send(
-        'Please provide valid name, email, password, department and start date of the new employee!'
-      );
-  }
-
-  try {
-    const newUser = await User.create({
-      name,
-      email,
-      password: bcrypt.hashSync(password, SALT_ROUNDS),
-      isAdmin
-    });
-
-    await Employee.create({
-      startDate,
-      department,
-      userId: newUser.dataValues.id
-    });
-
-    response.status(201).send('Successfull! Employee has been created!');
-
-    // delete newUser.dataValues['password']; // don't send back the password hash
-
-    // const fullEmployee = {
-    //   ...newUser.dataValues,
-    //   employee: newEmployee.dataValues
-    // };
-
-    // console.log('fullEmployee: ', fullEmployee);
-
-    // const token = toJWT({ userId: newUser.id });
-
-    // response.status(201).json({ token, user: newUser.dataValues });
-  } catch (error) {
-    if (error.name === 'SequelizeUniqueConstraintError') {
-      return response
-        .status(400)
-        .send({ message: 'There is an existing account with this email' });
+    if (!name || !email || !password || !department || !startDate) {
+      return response.status(400).send({
+        message:
+          'Please provide valid name, email, password, department and start date of the new employee!'
+      });
     }
 
-    return response
-      .status(400)
-      .send({ message: 'Something went wrong, sorry' });
+    try {
+      const newUser = await User.create({
+        name,
+        email,
+        password: bcrypt.hashSync(password, SALT_ROUNDS),
+        isAdmin
+      });
+
+      await Employee.create({
+        startDate,
+        department,
+        userId: newUser.dataValues.id
+      });
+
+      response
+        .status(201)
+        .send({ message: 'Successfull! Employee has been created!' });
+    } catch (error) {
+      if (error.name === 'SequelizeUniqueConstraintError') {
+        return response.status(400).send({
+          message: 'There is an existing account with this name and/or email'
+        });
+      }
+
+      return response
+        .status(400)
+        .send({ message: 'Something went wrong, sorry' });
+    }
   }
-});
+);
 
 // The /me endpoint can be used to:
 // - get the users email & name using only their token
