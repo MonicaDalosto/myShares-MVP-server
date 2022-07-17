@@ -4,7 +4,9 @@ function monthDiff(fromDate, toDate) {
   const momentFrom = moment(fromDate);
   const momentTo = moment(toDate).endOf('day');
 
-  return momentTo.diff(momentFrom, 'months');
+  return momentTo.diff(momentFrom, 'months') > 60
+    ? 60
+    : momentTo.diff(momentFrom, 'months');
 }
 
 // per user
@@ -97,10 +99,10 @@ const calculateSharesSpecificEmployee = (
     specificDate
   );
 
-  // const totalContractsSummary = calculateTheTotalEachEmployee(
-  //   employeeContractsSummary,
-  //   user.employee.id
-  // );
+  const totalContractsSummary = calculateTheTotalEachEmployee(
+    employeeContractsSummary,
+    user
+  );
 
   const grantedXOwnedShares = employeeContractsSummary.map(contract => {
     return {
@@ -113,7 +115,7 @@ const calculateSharesSpecificEmployee = (
   const fullContractsSummary = {
     name: user.name,
     employeeContractsSummary, // [{}, {} ,{}]
-    // totalContractsSummary, // 23534
+    totalContractsSummary, // 23534
     grantedXOwnedShares
   };
 
