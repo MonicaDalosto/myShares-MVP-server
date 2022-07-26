@@ -56,8 +56,7 @@ function calculateShares(
   return employeeContractsSummary;
 }
 
-const calculateTheTotalEachEmployee = (employeeContractsSummary, user) => {
-  const numberOfContracts = employeeContractsSummary.length;
+const calculateTheTotalOfContracts = (employeeContractsSummary, user) => {
   const totalOfVirtualGrantedShares = employeeContractsSummary.reduce(
     (accumulator, contract) => accumulator + contract.grantedShares,
     0
@@ -78,7 +77,7 @@ const calculateTheTotalEachEmployee = (employeeContractsSummary, user) => {
     employeeId: user.employee.id,
     name: user.name,
     department: user.employee.department,
-    numberOfContracts,
+    numberOfContracts: employeeContractsSummary.length,
     totalOfVirtualGrantedShares,
     totalOfVirtualOwnedShares,
     totalOfSharesValueBasedCompanyCurrentValuation
@@ -99,7 +98,7 @@ const calculateSharesSpecificEmployee = (
     specificDate
   );
 
-  const totalContractsSummary = calculateTheTotalEachEmployee(
+  const totalContractsSummary = calculateTheTotalOfContracts(
     employeeContractsSummary,
     user
   );
@@ -142,14 +141,13 @@ const calculateSharesAllEmployees = (
     );
     // console.log(employeeContractsSummary);
     // invoke the calculateTheTotalEachEmployee function passing the employeeContractsSummary
-    const totalOfEmployeeShares = calculateTheTotalEachEmployee(
+    const totalOfEmployeeShares = calculateTheTotalOfContracts(
       employeeContractsSummary,
       user
     );
 
     // add all the totalOfEmployeeShares data inside the fullEmployee and return it;
     const fullUser = {
-      // ...user.dataValues,
       employeeContractsSummary: employeeContractsSummary,
       totalOfEmployeeShares: totalOfEmployeeShares
     };
@@ -161,7 +159,7 @@ const calculateSharesAllEmployees = (
 
 module.exports = {
   calculateShares,
-  calculateTheTotalEachEmployee,
+  calculateTheTotalEachEmployee: calculateTheTotalOfContracts,
   calculateSharesSpecificEmployee,
   calculateSharesAllEmployees
 };
