@@ -48,7 +48,7 @@ router.post(
   }
 );
 
-// http -v :4000/contracts/calculation/1 Authorization:"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTY1NzYxMjI2MSwiZXhwIjoxNjU3NjE5NDYxfQ.8h7hlPKpswg8pLGe_vZBZ1lleDGGkg9eoBbAy4kTRc0"
+// http -v :4000/contracts/calculation/1 Authorization:"Bearer token"
 // http -v :4000/contracts/calculation/3?specificDate=2022-12-31 Authorization:"Bearer token"
 // Execute the User Shares calculation: (the ? at the endpoint makes the id optional)
 router.get(
@@ -81,15 +81,6 @@ router.get(
       const specificDate = user.employee.isActive
         ? request.query.projectedDate || new Date()
         : user.employee.endDate; // this projected date can be past from the client, then i can use this endpoint to get the projection;
-
-      // console.log(
-      //   'the values inside the endpoint: companyValuation ',
-      //   companyValuation,
-      //   'specificDate ',
-      //   specificDate,
-      //   'id ',
-      //   id
-      // );
 
       // do math
       const fullContractsSummary = calculateSharesSpecificEmployee(
@@ -142,7 +133,7 @@ router.get(
   }
 );
 
-// http -v DELETE :4000/contracts/15 Authorization:"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTY1NzcwNDg0NiwiZXhwIjoxNjU3NzEyMDQ2fQ.iFz5VwFY9kWK6E3v8vQc7v5B8MXwJFOY6BDp3vAZ6oE"
+// http -v DELETE :4000/contracts/15 Authorization:"Bearer token"
 router.delete(
   '/:id',
   authMiddleware,
@@ -167,18 +158,3 @@ router.delete(
 );
 
 module.exports = router;
-
-/// ------- Matias code of allEmployees calculation -------- ///
-// const users = [];
-
-// const companyTemp = await Company.findByPk(1);
-
-// const perUser = users.map((u) => {
-//   const contracts = await Contract.findAll({
-//     where: { employeeId: u.employee.id }
-//   });
-
-//   const calculation = calculateShares(contracts, company, new Date());
-//   return { userId: u.id, calculation };
-// })
-// ---- END MATIAS CODE -------- //
