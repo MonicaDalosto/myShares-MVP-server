@@ -3,7 +3,7 @@ const authMiddleware = require('../auth/middleware');
 const userIsAdminMidd = require('../auth/userIsAdminMiddleware');
 const { DEFAULT_COMPANY } = require('../config/constants');
 const Company = require('../models/').company;
-const { msg } = require('../emails/updateSharesTemplate');
+const { sendEmail } = require('../emails/updateSharesTemplate');
 
 const router = new Router();
 
@@ -49,7 +49,7 @@ router.put(
 // http -v :4000/company/sendEmail
 router.get('/sendEmail', async (request, response, next) => {
   try {
-    // msg();
+    sendEmail();
   } catch (error) {
     console.log(error);
     return response.status(400).send('Something went wrong!');
