@@ -9,7 +9,7 @@ const Company = require('../models/').company;
 const {
   calculateSharesSpecificEmployee
 } = require('../utils/shareCalculation');
-const { sendEmail } = require('../emails/updateSharesTemplate');
+const { sendUpdatedSharesEmail } = require('../emails/updateSharesTemplate');
 
 const getUserAndSendEmail = async (userId, companyValuation, companyShares) => {
   try {
@@ -30,7 +30,7 @@ const getUserAndSendEmail = async (userId, companyValuation, companyShares) => {
       today
     );
 
-    sendEmail(userFullContractsSummary);
+    sendUpdatedSharesEmail(userFullContractsSummary);
   } catch (error) {
     console.log(error);
   }
@@ -38,8 +38,8 @@ const getUserAndSendEmail = async (userId, companyValuation, companyShares) => {
 
 const checkEmployeeContracts = async () => {
   try {
-    today = moment(new Date()).endOf('day');
-    dayToday = moment(today).date();
+    const today = moment(new Date()).endOf('day');
+    // const dayToday = moment(today).date();
     // console.log('today: ', today, 'dayToday: ', dayToday);
     // find all contracts where: the cliffDate <= today && the day of cliffDate === today;
     // include Employee Table;
@@ -85,14 +85,22 @@ const checkEmployeeContracts = async () => {
       // console.log('company: ', company);
 
       // map over the userId array and for each userId, get the User, Employee and Contracts >> calculate the update >> send the email
-      const employeesToSendEmail = uniqueUserIdList.map(employee => {
-        // console.log(employee);
-        getUserAndSendEmail(
+      // const employeesToSendEmail = uniqueUserIdList.map(employee => {
+      //   // console.log(employee);
+      //   getUserAndSendEmail(
+      //     employee,
+      //     company.currentValuation,
+      //     company.totalCompanyShares
+      //   );
+      // });
+
+      for (const employee of uniqueUserIdList) {
+        await getUserAndSendEmail(
           employee,
           company.currentValuation,
           company.totalCompanyShares
         );
-      });
+      }
 
       // test only one e-mail:
       // getUserAndSendEmail(

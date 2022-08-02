@@ -1,10 +1,7 @@
 const moment = require('moment');
-require('dotenv').config();
-const sgMail = require('@sendgrid/mail');
+const { sendGridSendEmail } = require('../emails/sendEmailService');
 
-sgMail.setApiKey(process.env.SENDGRID_API_KEY);
-
-const sendEmail = user => {
+const sendUpdatedSharesEmail = user => {
   // console.log('user dentro da function sendEmail: ', user);
   const msg = {
     to: `${user.email}`, // Change to your recipient
@@ -87,14 +84,8 @@ const sendEmail = user => {
           </div>
           `
   };
-  sgMail
-    .send(msg)
-    .then(() => {
-      console.log('Email sent');
-    })
-    .catch(error => {
-      console.error(error);
-    });
+
+  sendGridSendEmail(msg);
 };
 
-module.exports = { sendEmail };
+module.exports = { sendUpdatedSharesEmail };
