@@ -10,6 +10,7 @@ const companyRouter = require('./routers/company');
 
 //constants
 const { PORT } = require('./config/constants');
+const { scheduleSendEmail } = require('./utils/runTheEmployeeCheck');
 
 // Create an express app
 const app = express();
@@ -31,4 +32,5 @@ app.use('/company', companyRouter);
 //start listening
 app.listen(PORT, () => {
   console.log(`Listening on port: ${PORT}`);
+  scheduleSendEmail();
 });

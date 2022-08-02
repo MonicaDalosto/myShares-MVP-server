@@ -50,6 +50,7 @@ router.put(
 router.get('/sendEmail', async (request, response, next) => {
   try {
     sendEmail();
+    response;
   } catch (error) {
     console.log(error);
     return response.status(400).send('Something went wrong!');
