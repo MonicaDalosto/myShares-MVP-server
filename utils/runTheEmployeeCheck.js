@@ -23,16 +23,12 @@ const getUserAndSendEmail = async (userId, companyValuation, companyShares) => {
       attributes: { exclude: ['password'] }
     });
 
-    // console.log(user);
-
     const userFullContractsSummary = calculateSharesSpecificEmployee(
       user,
       companyValuation,
       companyShares,
       today
     );
-
-    // console.log('calculation: ', userFullContractsSummary);
 
     sendEmail(userFullContractsSummary);
   } catch (error) {
@@ -68,35 +64,43 @@ const checkEmployeeContracts = async () => {
         ]
       }
     });
-    // get the unique userId of the active user;
-    const uniqueUserIdList = [];
-    contracts.map(
-      item =>
-        !uniqueUserIdList.includes(item.employee.userId) &&
-        uniqueUserIdList.push(item.employee.userId)
-    );
-    // console.log('uniqueUserId: ', uniqueUserId);
 
-    // get the company
-    const company = await Company.findByPk(DEFAULT_COMPANY);
-    // console.log('company: ', company);
+    if (contracts.length > 0) {
+      // console.log('contracts: ', contracts);
+      const contractsFilteredToday = contracts.filter(
+        item => moment(item.cliffDate).date() === moment(today).date()
+      );
+      console.log('contractsFilteredToday: ', contractsFilteredToday);
+      // get the unique userId of the active user;
+      const uniqueUserIdList = [];
+      contractsFilteredToday.map(
+        item =>
+          !uniqueUserIdList.includes(item.employee.userId) &&
+          uniqueUserIdList.push(item.employee.userId)
+      );
+      console.log('uniqueUserIdList: ', uniqueUserIdList);
 
-    // map over the userId array and for each userId, get the User, Employee and Contracts >> calculate the update >> send the email
-    // const employeesToSendEmail = uniqueUserIdList.map(employee => {
-    //   console.log(employee);
-    //   getUserAndSendEmail(
-    //     employee,
-    //     company.currentValuation,
-    //     company.totalCompanyShares
-    //   );
-    // });
+      // get the company
+      const company = await Company.findByPk(DEFAULT_COMPANY);
+      // console.log('company: ', company);
 
-    // test only one e-mail:
-    getUserAndSendEmail(
-      32,
-      company.currentValuation,
-      company.totalCompanyShares
-    );
+      // map over the userId array and for each userId, get the User, Employee and Contracts >> calculate the update >> send the email
+      const employeesToSendEmail = uniqueUserIdList.map(employee => {
+        // console.log(employee);
+        getUserAndSendEmail(
+          employee,
+          company.currentValuation,
+          company.totalCompanyShares
+        );
+      });
+
+      // test only one e-mail:
+      // getUserAndSendEmail(
+      //   32,
+      //   company.currentValuation,
+      //   company.totalCompanyShares
+      // );
+    }
   } catch (error) {
     console.log(error);
   }
@@ -104,16 +108,15 @@ const checkEmployeeContracts = async () => {
 
 const scheduleSendEmail = () => {
   cron.schedule(
-    '* * * * *',
+    '0 20 * * *',
     () => {
-      console.log('running a task every minute');
+      console.log('running a task on 20:00');
       checkEmployeeContracts();
-      // sendEmail();
+    },
+    {
+      scheduled: true,
+      timezone: 'Europe/Amsterdam'
     }
-    // {
-    //   scheduled: true,
-    //   timezone: 'Europe/Amsterdam'
-    // }
   );
 };
 
