@@ -41,6 +41,7 @@ function calculateShares(
     return {
       employeeId: user.employee.id,
       name: user.name,
+      email: user.email,
       department: user.employee.department,
       contractId: contract.id,
       signatureDate: contract.signatureDate,
@@ -113,6 +114,7 @@ const calculateSharesSpecificEmployee = (
 
   const fullContractsSummary = {
     name: user.name,
+    email: user.email,
     employeeContractsSummary, // [{}, {} ,{}]
     totalContractsSummary, // 23534
     grantedXOwnedShares

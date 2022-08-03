@@ -3,14 +3,9 @@ const authMiddleware = require('../auth/middleware');
 const userIsAdminMidd = require('../auth/userIsAdminMiddleware');
 const { DEFAULT_COMPANY } = require('../config/constants');
 const Company = require('../models/').company;
+const { sendEmail } = require('../emails/updateSharesTemplate');
 
 const router = new Router();
-
-// TO-DO
-// 1 (Done) - Externalize de number 1 for the default company to a constant:
-// const DEFAULT_COMPANY = 1;
-
-// 2 (Done) - Extract the code that validate if the user is admin to a middleware to avoid repeat the validation between multiple files.
 
 // Get the information about the Company:
 router.get('/', authMiddleware, async (request, response, next) => {
@@ -50,5 +45,16 @@ router.put(
     }
   }
 );
+
+// http -v :4000/company/sendEmail
+router.get('/sendEmail', async (request, response, next) => {
+  try {
+    sendEmail();
+    response;
+  } catch (error) {
+    console.log(error);
+    return response.status(400).send('Something went wrong!');
+  }
+});
 
 module.exports = router;
