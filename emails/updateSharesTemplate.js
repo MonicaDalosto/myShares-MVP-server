@@ -1,11 +1,12 @@
 const moment = require('moment');
 const { sendGridSendEmail } = require('../emails/sendEmailService');
+const { EMAIL_SENDER } = require('../config/constants');
 
 const sendUpdatedSharesEmail = user => {
   // console.log('user dentro da function sendEmail: ', user);
   const msg = {
-    to: `${user.email}`, // Change to your recipient
-    from: 'monica.kerber@gmail.com', // Change to your verified sender
+    to: user.email, // Change to your recipient
+    from: EMAIL_SENDER, // Change to your verified sender
     subject: `Update of Company's Shares`,
     // text: 'What is this part?',
     html: `
@@ -25,31 +26,7 @@ const sendUpdatedSharesEmail = user => {
                 </tr>
               </thead>
               <tbody>
-                ${user.employeeContractsSummary.map(
-                  item =>
-                    `<tr style="border: thin solid #f8f8f8; height: 40px; ">
-                    <td> ${moment(item.signatureDate).format(
-                      'DD/MM/YYYY'
-                    )} </td>
-                    <td> ${item.grantedShares.toLocaleString('en-GB', {
-                      minimumFractionDigits: 2,
-                      maximumFractionDigits: 2
-                    })} </td>
-                    <td> ${moment(item.cliffDate).format('DD/MM/YYYY')} </td>
-                    <td> ${item.numberOfMonthsAfterSignatureDate} </td>
-                    <td> ${item.virtualOwnedShares.toLocaleString('en-GB', {
-                      minimumFractionDigits: 2,
-                      maximumFractionDigits: 2
-                    })} </td>
-                    <td> ${item.sharesValueBasedCompanyCurrentValuation.toLocaleString(
-                      'en-GB',
-                      {
-                        style: 'currency',
-                        currency: 'EUR'
-                      }
-                    )} </td>
-                  </tr>`
-                )}
+                ${buildTableBody(user)}
               </tbody>
               <tfoot>
                 <tr style="background-color: #f8f8f8; height: 40px;">
@@ -84,8 +61,38 @@ const sendUpdatedSharesEmail = user => {
           </div>
           `
   };
-
   sendGridSendEmail(msg);
+};
+
+const buildTableBody = user => {
+  let tableBodyLines = '';
+  for (const item of user.employeeContractsSummary) {
+    tableBodyLines += `<tr style="border: thin solid #f8f8f8; height: 40px; ">
+        <td> 
+          ${moment(item.signatureDate).format('DD/MM/YYYY')} 
+        </td>
+        <td> 
+          ${item.grantedShares.toLocaleString('en-GB', {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+          })} 
+        </td>
+        <td> ${moment(item.cliffDate).format('DD/MM/YYYY')} </td>
+        <td> ${item.numberOfMonthsAfterSignatureDate} </td>
+        <td> ${item.virtualOwnedShares.toLocaleString('en-GB', {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2
+        })} </td>
+        <td> 
+        ${item.sharesValueBasedCompanyCurrentValuation.toLocaleString('en-GB', {
+          style: 'currency',
+          currency: 'EUR'
+        })} 
+        </td>
+      </tr>`;
+  }
+
+  return tableBodyLines;
 };
 
 module.exports = { sendUpdatedSharesEmail };

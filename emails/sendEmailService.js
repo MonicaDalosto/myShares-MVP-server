@@ -10,7 +10,7 @@ const sendGridSendEmail = emailMessage => {
       console.log('Email sent');
     })
     .catch(error => {
-      console.error(error);
+      console.error('Error from sendGrid: ', error, error.response.body);
     });
 };
 

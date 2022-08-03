@@ -1,6 +1,6 @@
 const cron = require('node-cron');
 const moment = require('moment');
-const { Sequelize, Op } = require('sequelize');
+const { Op } = require('sequelize');
 const { DEFAULT_COMPANY } = require('../config/constants');
 const User = require('../models/').user;
 const Employee = require('../models/').employee;
@@ -11,39 +11,106 @@ const {
 } = require('../utils/shareCalculation');
 const { sendUpdatedSharesEmail } = require('../emails/updateSharesTemplate');
 
-const getUserAndSendEmail = async (userId, companyValuation, companyShares) => {
-  try {
-    const user = await User.findByPk(userId, {
-      include: [
-        {
-          model: Employee,
-          include: [Contract]
-        }
-      ],
-      attributes: { exclude: ['password'] }
-    });
+// const getUserAndSendEmail = async (
+//   userId,
+//   companyValuation,
+//   companyShares,
+//   today
+// ) => {
+//   try {
+//     const user = await User.findByPk(userId, {
+//       include: [
+//         {
+//           model: Employee,
+//           include: [Contract]
+//         }
+//       ],
+//       attributes: { exclude: ['password'] }
+//     });
 
-    const userFullContractsSummary = calculateSharesSpecificEmployee(
-      user,
-      companyValuation,
-      companyShares,
-      today
-    );
+//     // console.log('user dentro da função: ', user);
 
-    sendUpdatedSharesEmail(userFullContractsSummary);
-  } catch (error) {
-    console.log(error);
-  }
-};
+//     const userFullContractsSummary = calculateSharesSpecificEmployee(
+//       user,
+//       companyValuation,
+//       companyShares,
+//       today
+//     );
+
+//     sendUpdatedSharesEmail(userFullContractsSummary);
+//   } catch (error) {
+//     console.log(error);
+//   }
+// };
+
+// const checkEmployeeContracts = async () => {
+//   try {
+//     const today = moment(new Date()).endOf('day');
+
+//     // find all contracts where: the cliffDate <= today && the day of cliffDate === today;
+//     // include Employee Table;
+//     const contracts = await Contract.findAll({
+//       include: [
+//         {
+//           model: Employee,
+//           where: {
+//             isActive: {
+//               [Op.is]: true
+//             }
+//           }
+//         }
+//       ],
+//       where: {
+//         [Op.and]: [{ cliffDate: { [Op.lte]: today } }]
+//       }
+//     });
+
+//     if (contracts.length > 0) {
+//       // console.log('contracts: ', contracts);
+//       const contractsFilteredToday = contracts.filter(
+//         item => moment(item.cliffDate).date() === moment(today).date()
+//       );
+//       // console.log('contractsFilteredToday: ', contractsFilteredToday);
+//       // get the unique userId of the active user;
+//       const uniqueUserIdList = [];
+//       contractsFilteredToday.map(
+//         item =>
+//           !uniqueUserIdList.includes(item.employee.userId) &&
+//           uniqueUserIdList.push(item.employee.userId)
+//       );
+//       console.log('uniqueUserIdList: ', uniqueUserIdList);
+
+//       // get the company
+//       const company = await Company.findByPk(DEFAULT_COMPANY);
+//       // console.log('company: ', company);
+
+//       for (const employee of uniqueUserIdList) {
+//         await getUserAndSendEmail(
+//           employee,
+//           company.currentValuation,
+//           company.totalCompanyShares,
+//           today
+//         );
+//       }
+
+//       // test only one e-mail:
+//       // getUserAndSendEmail(
+//       //   32,
+//       //   company.currentValuation,
+//       //   company.totalCompanyShares
+//       // );
+//     }
+//   } catch (error) {
+//     console.log(error);
+//   }
+// };
 
 const checkEmployeeContracts = async () => {
   try {
     const today = moment(new Date()).endOf('day');
-    // const dayToday = moment(today).date();
-    // console.log('today: ', today, 'dayToday: ', dayToday);
-    // find all contracts where: the cliffDate <= today && the day of cliffDate === today;
-    // include Employee Table;
-    const contracts = await Contract.findAll({
+
+    // get all active users, with their contracts...
+    const allUsers = await User.findAll({
       include: [
         {
           model: Employee,
@@ -51,63 +118,34 @@ const checkEmployeeContracts = async () => {
             isActive: {
               [Op.is]: true
             }
-          }
+          },
+          include: [Contract]
         }
       ],
-      where: {
-        [Op.and]: [
-          // Sequelize.where(
-          //   Sequelize.fn('date_trunc', 'day', Sequelize.col('cliffDate')),
-          //   dayToday
-          // ),
-          { cliffDate: { [Op.lte]: today } }
-        ]
-      }
+      attributes: { exclude: ['password'] }
     });
 
-    if (contracts.length > 0) {
-      // console.log('contracts: ', contracts);
-      const contractsFilteredToday = contracts.filter(
-        item => moment(item.cliffDate).date() === moment(today).date()
-      );
-      console.log('contractsFilteredToday: ', contractsFilteredToday);
-      // get the unique userId of the active user;
-      const uniqueUserIdList = [];
-      contractsFilteredToday.map(
-        item =>
-          !uniqueUserIdList.includes(item.employee.userId) &&
-          uniqueUserIdList.push(item.employee.userId)
-      );
-      console.log('uniqueUserIdList: ', uniqueUserIdList);
+    // console.log('allUsers: ', allUsers);
 
-      // get the company
-      const company = await Company.findByPk(DEFAULT_COMPANY);
-      // console.log('company: ', company);
+    // get the company
+    const company = await Company.findByPk(DEFAULT_COMPANY);
+    // console.log('company: ', company);
 
-      // map over the userId array and for each userId, get the User, Employee and Contracts >> calculate the update >> send the email
-      // const employeesToSendEmail = uniqueUserIdList.map(employee => {
-      //   // console.log(employee);
-      //   getUserAndSendEmail(
-      //     employee,
-      //     company.currentValuation,
-      //     company.totalCompanyShares
-      //   );
-      // });
-
-      for (const employee of uniqueUserIdList) {
-        await getUserAndSendEmail(
-          employee,
+    // if allUsers...
+    if (allUsers.length > 0) {
+      // iterate over them, and for each user, calculate the Shares and send the e-mail:
+      for (const user of allUsers) {
+        const userFullContractsSummary = calculateSharesSpecificEmployee(
+          user,
           company.currentValuation,
-          company.totalCompanyShares
+          company.totalCompanyShares,
+          today
         );
-      }
 
-      // test only one e-mail:
-      // getUserAndSendEmail(
-      //   32,
-      //   company.currentValuation,
-      //   company.totalCompanyShares
-      // );
+        // console.log('userFullContractsSummary: ', userFullContractsSummary);
+
+        sendUpdatedSharesEmail(userFullContractsSummary);
+      }
     }
   } catch (error) {
     console.log(error);
@@ -116,9 +154,9 @@ const checkEmployeeContracts = async () => {
 
 const scheduleSendEmail = () => {
   cron.schedule(
-    '0 20 * * *',
+    '0 2 4 * *',
     () => {
-      console.log('running a task on 20:00');
+      console.log('running a task on 02:00 every 4th day');
       checkEmployeeContracts();
     },
     {
