@@ -12,7 +12,7 @@ module.exports = {
           name: 'Apple',
           email: 'apple@apple.com',
           password: bcrypt.hashSync('apple@12', SALT_ROUNDS),
-          isAdmin: true,
+          isAdmin: false,
           createdAt: new Date(),
           updatedAt: new Date()
         },
@@ -20,7 +20,7 @@ module.exports = {
           name: 'Banana',
           email: 'banana@banana.com',
           password: bcrypt.hashSync('banana@12', SALT_ROUNDS),
-          isAdmin: true,
+          isAdmin: false,
           createdAt: new Date(),
           updatedAt: new Date()
         },
@@ -28,7 +28,7 @@ module.exports = {
           name: 'Coco',
           email: 'coco@coco.com',
           password: bcrypt.hashSync('coco@12', SALT_ROUNDS),
-          isAdmin: true,
+          isAdmin: false,
           createdAt: new Date(),
           updatedAt: new Date()
         },
@@ -36,7 +36,7 @@ module.exports = {
           name: 'Mango',
           email: 'mango@mango.com',
           password: bcrypt.hashSync('mango@12', SALT_ROUNDS),
-          isAdmin: true,
+          isAdmin: false,
           createdAt: new Date(),
           updatedAt: new Date()
         },
@@ -44,7 +44,7 @@ module.exports = {
           name: 'Grapes',
           email: 'grapes@grapes.com',
           password: bcrypt.hashSync('grapes@12', SALT_ROUNDS),
-          isAdmin: true,
+          isAdmin: false,
           createdAt: new Date(),
           updatedAt: new Date()
         },
@@ -245,6 +245,38 @@ module.exports = {
           email: 'melon@melon.com',
           password: bcrypt.hashSync('melon@12', SALT_ROUNDS),
           isAdmin: false,
+          createdAt: new Date(),
+          updatedAt: new Date()
+        },
+        {
+          name: 'Mônica teste',
+          email: 'monica.kerber@gmail.com',
+          password: bcrypt.hashSync('monica@12', SALT_ROUNDS),
+          isAdmin: true,
+          createdAt: new Date(),
+          updatedAt: new Date()
+        },
+        {
+          name: 'Mônica teste 2',
+          email: 'moniquinha_k@hotmail.com',
+          password: bcrypt.hashSync('moniquinha@12', SALT_ROUNDS),
+          isAdmin: true,
+          createdAt: new Date(),
+          updatedAt: new Date()
+        },
+        {
+          name: 'Mônica teste 3',
+          email: 'mk.dalosto@gmail.com',
+          password: bcrypt.hashSync('mk.dalosto@12', SALT_ROUNDS),
+          isAdmin: false,
+          createdAt: new Date(),
+          updatedAt: new Date()
+        },
+        {
+          name: 'Rafael teste',
+          email: 'rf.dalosto@gmail.com',
+          password: bcrypt.hashSync('rafael@12', SALT_ROUNDS),
+          isAdmin: true,
           createdAt: new Date(),
           updatedAt: new Date()
         }
