@@ -6,6 +6,7 @@ const userIsAdminMidd = require('../auth/userIsAdminMiddleware');
 const User = require('../models/').user;
 const Employee = require('../models/').employee;
 const { SALT_ROUNDS } = require('../config/constants');
+const { validatePassword } = require('../utils/validatePassword');
 
 const router = new Router();
 
@@ -80,6 +81,56 @@ router.post(
         });
       }
 
+      return response
+        .status(400)
+        .send({ message: 'Something went wrong, sorry' });
+    }
+  }
+);
+
+// http -v PATCH :4000/auth/changePassword password=apple@12 newPassword=Apple@12 confirmNewPassword=Apple@12 Authorization:"Bearer token"
+router.patch(
+  '/changePassword',
+  authMiddleware,
+  async (request, response, next) => {
+    try {
+      // get the passwords from the body, and the id from the request...
+      const { password, newPassword, confirmNewPassword } = request.body;
+      const { id } = request.user.dataValues;
+      const isValidPassword = validatePassword(newPassword);
+
+      // if no passwords, return error...
+      if (
+        !password ||
+        !newPassword ||
+        !confirmNewPassword ||
+        password === newPassword ||
+        newPassword !== confirmNewPassword ||
+        !isValidPassword
+      ) {
+        return response
+          .status(400)
+          .send({ message: 'Please provide correct data' });
+      }
+      // find the user
+      const user = await User.findByPk(id);
+
+      // if no user or the password doesn't match, return error...
+      if (!user || !bcrypt.compareSync(password, user.password)) {
+        return response.status(400).send({
+          message: 'User with that email not found or password incorrect'
+        });
+      }
+
+      await user.update({
+        password: bcrypt.hashSync(newPassword, SALT_ROUNDS)
+      });
+
+      return response
+        .status(200)
+        .send({ message: 'Successful! Password updated!' });
+    } catch (error) {
+      console.log(error);
       return response
         .status(400)
         .send({ message: 'Something went wrong, sorry' });
