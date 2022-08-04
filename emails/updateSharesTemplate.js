@@ -3,12 +3,11 @@ const { sendGridSendEmail } = require('../emails/sendEmailService');
 const { EMAIL_SENDER } = require('../config/constants');
 
 const sendUpdatedSharesEmail = user => {
-  // console.log('user dentro da function sendEmail: ', user);
   const msg = {
-    to: user.email, // Change to your recipient
-    from: EMAIL_SENDER, // Change to your verified sender
-    subject: `Update of Company's Shares`,
-    // text: 'What is this part?',
+    to: user.email,
+    from: EMAIL_SENDER,
+    subject: `Company's Shares Update`,
+    text: `Company's Shares Update`,
     html: `
           <div style="width: 800px; font-family: Arial, Helvetica, sans-serif; color: #343a40; font-size: 12px; text-align: center; ">
             <h2 style="font-size: 16px; height: 30px; ">Hi, ${user.name} </h2>
