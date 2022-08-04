@@ -714,6 +714,206 @@ module.exports = {
           createdAt: new Date(),
           updatedAt: new Date(),
           employeeId: 30
+        },
+        {
+          signatureDate: '2018-08-01',
+          companyValuation: 1000000.0,
+          totalCompanyShares: 1851852,
+          grantedShares: 9259.26,
+          cliffDate: '2019-08-01',
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          employeeId: 31
+        },
+        {
+          signatureDate: '2019-08-01',
+          companyValuation: 2000000.0,
+          totalCompanyShares: 2500000,
+          grantedShares: 6250.0,
+          cliffDate: '2020-08-01',
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          employeeId: 31
+        },
+        {
+          signatureDate: '2020-08-01',
+          companyValuation: 2000000.0,
+          totalCompanyShares: 2500000,
+          grantedShares: 6250.0,
+          cliffDate: '2021-08-01',
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          employeeId: 31
+        },
+        {
+          signatureDate: '2021-08-01',
+          companyValuation: 2000000.0,
+          totalCompanyShares: 2631579,
+          grantedShares: 6578.95,
+          cliffDate: '2022-08-01',
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          employeeId: 31
+        },
+        {
+          signatureDate: '2022-08-01',
+          companyValuation: 2000000.0,
+          totalCompanyShares: 2631579,
+          grantedShares: 6578.95,
+          cliffDate: '2023-08-01',
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          employeeId: 31
+        },
+        {
+          signatureDate: '2018-08-01',
+          companyValuation: 1000000.0,
+          totalCompanyShares: 1851852,
+          grantedShares: 9259.26,
+          cliffDate: '2019-08-01',
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          employeeId: 32
+        },
+        {
+          signatureDate: '2019-08-01',
+          companyValuation: 2000000.0,
+          totalCompanyShares: 2500000,
+          grantedShares: 6250.0,
+          cliffDate: '2020-08-01',
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          employeeId: 32
+        },
+        {
+          signatureDate: '2020-08-01',
+          companyValuation: 2000000.0,
+          totalCompanyShares: 2500000,
+          grantedShares: 6250.0,
+          cliffDate: '2021-08-01',
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          employeeId: 32
+        },
+        {
+          signatureDate: '2021-08-01',
+          companyValuation: 2000000.0,
+          totalCompanyShares: 2631579,
+          grantedShares: 6578.95,
+          cliffDate: '2022-08-01',
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          employeeId: 32
+        },
+        {
+          signatureDate: '2022-08-01',
+          companyValuation: 2000000.0,
+          totalCompanyShares: 2631579,
+          grantedShares: 6578.95,
+          cliffDate: '2023-08-01',
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          employeeId: 32
+        },
+        {
+          signatureDate: '2018-08-01',
+          companyValuation: 1000000.0,
+          totalCompanyShares: 1851852,
+          grantedShares: 9259.26,
+          cliffDate: '2019-08-01',
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          employeeId: 33
+        },
+        {
+          signatureDate: '2019-08-01',
+          companyValuation: 2000000.0,
+          totalCompanyShares: 2500000,
+          grantedShares: 6250.0,
+          cliffDate: '2020-08-01',
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          employeeId: 33
+        },
+        {
+          signatureDate: '2020-08-01',
+          companyValuation: 2000000.0,
+          totalCompanyShares: 2500000,
+          grantedShares: 6250.0,
+          cliffDate: '2021-08-01',
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          employeeId: 33
+        },
+        {
+          signatureDate: '2021-08-01',
+          companyValuation: 2000000.0,
+          totalCompanyShares: 2631579,
+          grantedShares: 6578.95,
+          cliffDate: '2022-08-01',
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          employeeId: 33
+        },
+        {
+          signatureDate: '2022-08-01',
+          companyValuation: 2000000.0,
+          totalCompanyShares: 2631579,
+          grantedShares: 6578.95,
+          cliffDate: '2023-08-01',
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          employeeId: 33
+        },
+        {
+          signatureDate: '2018-08-01',
+          companyValuation: 1000000.0,
+          totalCompanyShares: 1851852,
+          grantedShares: 9259.26,
+          cliffDate: '2019-08-01',
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          employeeId: 34
+        },
+        {
+          signatureDate: '2019-08-01',
+          companyValuation: 2000000.0,
+          totalCompanyShares: 2500000,
+          grantedShares: 6250.0,
+          cliffDate: '2020-08-01',
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          employeeId: 34
+        },
+        {
+          signatureDate: '2020-08-01',
+          companyValuation: 2000000.0,
+          totalCompanyShares: 2500000,
+          grantedShares: 6250.0,
+          cliffDate: '2021-08-01',
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          employeeId: 34
+        },
+        {
+          signatureDate: '2021-08-01',
+          companyValuation: 2000000.0,
+          totalCompanyShares: 2631579,
+          grantedShares: 6578.95,
+          cliffDate: '2022-08-01',
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          employeeId: 34
+        },
+        {
+          signatureDate: '2022-08-01',
+          companyValuation: 2000000.0,
+          totalCompanyShares: 2631579,
+          grantedShares: 6578.95,
+          cliffDate: '2023-08-01',
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          employeeId: 34
         }
       ],
       {}
