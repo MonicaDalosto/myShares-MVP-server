@@ -1,6 +1,6 @@
 const bcrypt = require('bcrypt');
 const { Router } = require('express');
-const { toJWT } = require('../auth/jwt');
+const { toJWT, toData } = require('../auth/jwt');
 const authMiddleware = require('../auth/middleware');
 const userIsAdminMidd = require('../auth/userIsAdminMiddleware');
 const User = require('../models/').user;
@@ -39,6 +39,15 @@ router.post('/login', async (request, response, next) => {
       .status(400)
       .send({ message: 'Something went wrong, sorry' });
   }
+});
+
+// The /me endpoint can be used to:
+// - get the users email & name using only their token
+// - checking if a token is (still) valid
+router.get('/me', authMiddleware, async (req, res) => {
+  // don't send back the password hash
+  delete req.user.dataValues['password'];
+  res.status(200).send({ ...req.user.dataValues });
 });
 
 // I will use this router, when the admin creates the new employee:
@@ -176,7 +185,9 @@ router.post('/forgotPassword', async (request, response, next) => {
 
     buildResetPasswordEmail(user, emailUrl);
 
-    return response.status(200).send({ message: 'Email sent!' });
+    return response
+      .status(200)
+      .send({ message: 'Email sent! Please, check your email!' });
   } catch (error) {
     console.log(error);
     return response
@@ -185,13 +196,19 @@ router.post('/forgotPassword', async (request, response, next) => {
   }
 });
 
-// The /me endpoint can be used to:
-// - get the users email & name using only their token
-// - checking if a token is (still) valid
-router.get('/me', authMiddleware, async (req, res) => {
-  // don't send back the password hash
-  delete req.user.dataValues['password'];
-  res.status(200).send({ ...req.user.dataValues });
+// http -v POST :4000/auth/checkResetPasswordToken resetToken=token
+router.post('/checkResetPasswordToken', async (request, response, next) => {
+  try {
+    const { resetToken } = request.body;
+    // console.log('reset token: ', resetToken);
+
+    toData(resetToken);
+
+    return response.send({ Message: 'The Reset Password Token is valid!' });
+  } catch (error) {
+    console.log(error);
+    return response.status(400).send(error);
+  }
 });
 
 module.exports = router;
