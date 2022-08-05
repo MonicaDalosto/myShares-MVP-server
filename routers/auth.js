@@ -7,6 +7,7 @@ const User = require('../models/').user;
 const Employee = require('../models/').employee;
 const { SALT_ROUNDS } = require('../config/constants');
 const { validatePassword } = require('../utils/validatePassword');
+const { buildResetPasswordEmail } = require('../emails/passwordTemplate');
 
 const router = new Router();
 
@@ -151,20 +152,23 @@ router.patch(
 router.post('/forgotPassword', async (request, response, next) => {
   try {
     const { email } = request.body;
-
+    //  find the user...
     const user = await User.findOne({
       where: { email },
       attributes: { exclude: ['password'] }
     });
-
+    // if no user return error...
     if (!user) {
       return response
         .status(400)
         .send({ message: 'User not found! Please, provide valid email!' });
     }
     // console.log('user inside the endpoint: ', user);
+    // if user, generate the token passing the user.id
     const token = toJWT({ userId: user.id });
     console.log('token inside the endpoint: ', token);
+
+    buildResetPasswordEmail(user, token);
 
     return response.status(200).send({ message: 'Email sent!' });
   } catch (error) {
