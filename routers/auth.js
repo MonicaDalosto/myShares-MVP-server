@@ -6,16 +6,17 @@ const userIsAdminMidd = require('../auth/userIsAdminMiddleware');
 const User = require('../models/').user;
 const Employee = require('../models/').employee;
 const { SALT_ROUNDS } = require('../config/constants');
+const { validatePassword } = require('../utils/validatePassword');
 
 const router = new Router();
 
 //login
-router.post('/login', async (req, res, next) => {
+router.post('/login', async (request, response, next) => {
   try {
-    const { email, password } = req.body;
+    const { email, password } = request.body;
 
     if (!email || !password) {
-      return res
+      return response
         .status(400)
         .send({ message: 'Please provide both email and password' });
     }
@@ -23,17 +24,19 @@ router.post('/login', async (req, res, next) => {
     const user = await User.findOne({ where: { email } });
 
     if (!user || !bcrypt.compareSync(password, user.password)) {
-      return res.status(400).send({
+      return response.status(400).send({
         message: 'User with that email not found or password incorrect'
       });
     }
 
     delete user.dataValues['password']; // don't send back the password hash
     const token = toJWT({ userId: user.id });
-    return res.status(200).send({ token, user: user.dataValues });
+    return response.status(200).send({ token, user: user.dataValues });
   } catch (error) {
     console.log(error);
-    return res.status(400).send({ message: 'Something went wrong, sorry' });
+    return response
+      .status(400)
+      .send({ message: 'Something went wrong, sorry' });
   }
 });
 
@@ -46,10 +49,17 @@ router.post(
   async (request, response) => {
     const { name, email, department, password, isAdmin, startDate } =
       request.body;
+    const isValidPassword = validatePassword(password);
+    // console.log(name, email, department, password, isAdmin, startDate);
 
-    console.log(name, email, department, password, isAdmin, startDate);
-
-    if (!name || !email || !password || !department || !startDate) {
+    if (
+      !name ||
+      !email ||
+      !password ||
+      !department ||
+      !startDate ||
+      !isValidPassword
+    ) {
       return response.status(400).send({
         message:
           'Please provide valid name, email, password, department and start date of the new employee!'
@@ -80,6 +90,56 @@ router.post(
         });
       }
 
+      return response
+        .status(400)
+        .send({ message: 'Something went wrong, sorry' });
+    }
+  }
+);
+
+// http -v PATCH :4000/auth/changePassword password=apple@12 newPassword=apple@12 confirmNewPassword=apple@12 Authorization:"Bearer token"
+router.patch(
+  '/changePassword',
+  authMiddleware,
+  async (request, response, next) => {
+    try {
+      // get the passwords from the body, and the id from the request...
+      const { password, newPassword, confirmNewPassword } = request.body;
+      const { id } = request.user.dataValues;
+      const isValidPassword = validatePassword(newPassword);
+
+      // if no passwords, return error...
+      if (
+        !password ||
+        !newPassword ||
+        !confirmNewPassword ||
+        password === newPassword ||
+        newPassword !== confirmNewPassword ||
+        !isValidPassword
+      ) {
+        return response
+          .status(400)
+          .send({ message: 'Please provide correct data' });
+      }
+      // find the user
+      const user = await User.findByPk(id);
+
+      // if no user or the password doesn't match, return error...
+      if (!user || !bcrypt.compareSync(password, user.password)) {
+        return response.status(400).send({
+          message: 'User with that email not found or password incorrect'
+        });
+      }
+
+      await user.update({
+        password: bcrypt.hashSync(newPassword, SALT_ROUNDS)
+      });
+
+      return response
+        .status(200)
+        .send({ message: 'Successful! Password updated!' });
+    } catch (error) {
+      console.log(error);
       return response
         .status(400)
         .send({ message: 'Something went wrong, sorry' });
