@@ -147,6 +147,34 @@ router.patch(
   }
 );
 
+// http -v POST :4000/auth/forgotPassword email=monica.kerber@gmail.co
+router.post('/forgotPassword', async (request, response, next) => {
+  try {
+    const { email } = request.body;
+
+    const user = await User.findOne({
+      where: { email },
+      attributes: { exclude: ['password'] }
+    });
+
+    if (!user) {
+      return response
+        .status(400)
+        .send({ message: 'User not found! Please, provide valid email!' });
+    }
+    // console.log('user inside the endpoint: ', user);
+    const token = toJWT({ userId: user.id });
+    console.log('token inside the endpoint: ', token);
+
+    return response.status(200).send({ message: 'Email sent!' });
+  } catch (error) {
+    console.log(error);
+    return response
+      .status(400)
+      .send({ message: 'Something went wrong, sorry' });
+  }
+});
+
 // The /me endpoint can be used to:
 // - get the users email & name using only their token
 // - checking if a token is (still) valid
