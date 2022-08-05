@@ -211,4 +211,36 @@ router.post('/checkResetPasswordToken', async (request, response, next) => {
   }
 });
 
+// http -v PATCH :4000/auth/resetPassword resetToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjMxLCJpYXQiOjE2NTk3Mjg1NjAsImV4cCI6MTY1OTczNTc2MH0.kwtTMGE2qQcy3ezzJCRWp-JC55vve9pr0QsRuW_pMvY password=Monica@12 confirmPassword=Monica@12
+
+// http -v PATCH :4000/auth/resetPassword resetToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjMyLCJpYXQiOjE2NTk3MjEyNDMsImV4cCI6MTY1OTcyODQ0M30._ltyD1CG2kw2wdc6ziDkpOR3pHCx0TvHNzC-dSwZ-zE password=Monica@12 confirmPassword=Monica@12
+router.patch('/resetPassword', async (request, response, next) => {
+  try {
+    const { resetToken, password, confirmPassword } = request.body;
+    const isValidPassword = validatePassword(password);
+    const userData = toData(resetToken);
+    // console.log(userData);
+
+    if (
+      !password ||
+      !confirmPassword ||
+      password !== confirmPassword ||
+      !isValidPassword
+    ) {
+      return response
+        .status(400)
+        .send({ message: 'Please provide correct data!' });
+    }
+
+    const user = await User.findByPk(userData.userId);
+
+    console.log(user);
+
+    // if (!user) {
+    // }
+  } catch (error) {
+    console.log(error);
+  }
+});
+
 module.exports = router;

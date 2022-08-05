@@ -17,10 +17,10 @@ const buildResetPasswordEmail = (user, emailUrl) => {
                 If you requested your password to be reset, please click <a href=${emailUrl}>here</a>.
               </p>
               <p>
-                Please, note that this link will expire 2 hours after receipt of this email. 
+                Please, note that this link will expire 2 hours after being requested. 
               </p>
               <p>
-                If you are unable to reset your password within this time, please, request for your password to be reset again. Remember that passwords are case sensitive.
+                If you are unable to reset your password within this time, please, request for your password to be reset again.
               </p>
             </div>
           `
