@@ -5,7 +5,7 @@ const authMiddleware = require('../auth/middleware');
 const userIsAdminMidd = require('../auth/userIsAdminMiddleware');
 const User = require('../models/').user;
 const Employee = require('../models/').employee;
-const { SALT_ROUNDS } = require('../config/constants');
+const { SALT_ROUNDS, FORGOT_PASSWORD_URL } = require('../config/constants');
 const { validatePassword } = require('../utils/validatePassword');
 const { buildResetPasswordEmail } = require('../emails/passwordTemplate');
 
@@ -148,7 +148,7 @@ router.patch(
   }
 );
 
-// http -v POST :4000/auth/forgotPassword email=monica.kerber@gmail.co
+// http -v POST :4000/auth/forgotPassword email=monica.kerber@gmail.com
 router.post('/forgotPassword', async (request, response, next) => {
   try {
     const { email } = request.body;
@@ -165,10 +165,16 @@ router.post('/forgotPassword', async (request, response, next) => {
     }
     // console.log('user inside the endpoint: ', user);
     // if user, generate the token passing the user.id
-    const token = toJWT({ userId: user.id });
-    console.log('token inside the endpoint: ', token);
+    const resetToken = toJWT({ userId: user.id });
 
-    buildResetPasswordEmail(user, token);
+    await user.update({
+      passwordResetToken: resetToken,
+      passwordResetAt: new Date(Date.now() + 2 * 60 * 60 * 1000)
+    });
+
+    const emailUrl = `${FORGOT_PASSWORD_URL}/reset-password/${resetToken}`;
+
+    buildResetPasswordEmail(user, emailUrl);
 
     return response.status(200).send({ message: 'Email sent!' });
   } catch (error) {

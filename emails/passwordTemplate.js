@@ -1,7 +1,7 @@
 const { sendGridSendEmail } = require('./sendEmailService');
-const { EMAIL_SENDER, FORGOT_PASSWORD_URL } = require('../config/constants');
+const { EMAIL_SENDER } = require('../config/constants');
 
-const buildResetPasswordEmail = (user, token) => {
+const buildResetPasswordEmail = (user, emailUrl) => {
   const msg = {
     to: user.email,
     from: EMAIL_SENDER,
@@ -14,7 +14,7 @@ const buildResetPasswordEmail = (user, token) => {
               Hello, ${user.name}!
               </p>
               <p>
-                If you requested your password to be reset, please click <a href="${FORGOT_PASSWORD_URL}${token}">here</a>.
+                If you requested your password to be reset, please click <a href=${emailUrl}>here</a>.
               </p>
               <p>
                 Please, note that this link will expire 2 hours after receipt of this email. 

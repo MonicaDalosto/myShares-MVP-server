@@ -7,7 +7,7 @@ module.exports = {
       [
         {
           startDate: '2017-01-01',
-          isActive: false,
+          isActive: true,
           department: 'HR',
           endDate: '2022-08-03',
           createdAt: new Date(),
@@ -52,7 +52,7 @@ module.exports = {
         },
         {
           startDate: '2017-09-01',
-          isActive: false,
+          isActive: true,
           department: 'R&D',
           endDate: '2020-04-10',
           createdAt: new Date(),
@@ -61,7 +61,7 @@ module.exports = {
         },
         {
           startDate: '2017-06-01',
-          isActive: false,
+          isActive: true,
           department: 'R&D',
           endDate: '2022-08-03',
           createdAt: new Date(),
@@ -70,7 +70,7 @@ module.exports = {
         },
         {
           startDate: '2018-03-01',
-          isActive: false,
+          isActive: true,
           department: 'R&D',
           endDate: '2022-08-03',
           createdAt: new Date(),
@@ -97,7 +97,7 @@ module.exports = {
         },
         {
           startDate: '2020-06-01',
-          isActive: false,
+          isActive: true,
           department: 'Operations',
           endDate: '2022-08-03',
           createdAt: new Date(),
@@ -106,7 +106,7 @@ module.exports = {
         },
         {
           startDate: '2020-05-01',
-          isActive: false,
+          isActive: true,
           department: 'Operations',
           endDate: '2022-08-03',
           createdAt: new Date(),
@@ -124,7 +124,7 @@ module.exports = {
         },
         {
           startDate: '2019-02-01',
-          isActive: false,
+          isActive: true,
           department: 'Operations',
           endDate: '2022-08-03',
           createdAt: new Date(),
@@ -187,7 +187,7 @@ module.exports = {
         },
         {
           startDate: '2019-01-01',
-          isActive: false,
+          isActive: true,
           department: 'R&D',
           endDate: '2022-08-03',
           createdAt: new Date(),
@@ -205,7 +205,7 @@ module.exports = {
         },
         {
           startDate: '2020-01-01',
-          isActive: false,
+          isActive: true,
           department: 'Marketing',
           endDate: '2022-08-03',
           createdAt: new Date(),
@@ -232,7 +232,7 @@ module.exports = {
         },
         {
           startDate: '2019-06-01',
-          isActive: false,
+          isActive: true,
           department: 'Finance',
           endDate: '2022-08-03',
           createdAt: new Date(),
@@ -307,6 +307,14 @@ module.exports = {
           createdAt: new Date(),
           updatedAt: new Date(),
           userId: 34
+        },
+        {
+          startDate: '2017-08-01',
+          isActive: true,
+          department: 'HR',
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          userId: 35
         }
       ],
       {}
