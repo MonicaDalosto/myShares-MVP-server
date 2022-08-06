@@ -29,9 +29,6 @@ module.exports = {
       passwordResetToken: {
         type: Sequelize.STRING
       },
-      passwordResetAt: {
-        type: Sequelize.DATE
-      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE

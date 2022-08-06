@@ -172,13 +172,11 @@ router.post('/forgotPassword', async (request, response, next) => {
         .status(400)
         .send({ message: 'User not found! Please, provide valid email!' });
     }
-    // console.log('user inside the endpoint: ', user);
     // if user, generate the token passing the user.id
     const resetToken = toJWT({ userId: user.id });
 
     await user.update({
-      passwordResetToken: resetToken,
-      passwordResetAt: new Date(Date.now() + 2 * 60 * 60 * 1000)
+      passwordResetToken: resetToken
     });
 
     const emailUrl = `${FORGOT_PASSWORD_URL}/reset-password/${resetToken}`;
@@ -200,7 +198,6 @@ router.post('/forgotPassword', async (request, response, next) => {
 router.post('/checkResetPasswordToken', async (request, response, next) => {
   try {
     const { resetToken } = request.body;
-    // console.log('reset token: ', resetToken);
 
     toData(resetToken);
 
@@ -237,8 +234,7 @@ router.patch('/resetPassword', async (request, response, next) => {
 
     await user.update({
       password: bcrypt.hashSync(password, SALT_ROUNDS),
-      passwordResetToken: null,
-      passwordResetAt: null
+      passwordResetToken: null
     });
 
     return response
