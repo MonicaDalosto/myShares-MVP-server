@@ -11,7 +11,7 @@ module.exports = {
         {
           name: 'Apple',
           email: 'apple@apple.com',
-          password: bcrypt.hashSync('apple@12', SALT_ROUNDS),
+          password: bcrypt.hashSync('Apple@12', SALT_ROUNDS),
           isAdmin: false,
           createdAt: new Date(),
           updatedAt: new Date()
@@ -19,15 +19,15 @@ module.exports = {
         {
           name: 'Banana',
           email: 'banana@banana.com',
-          password: bcrypt.hashSync('banana@12', SALT_ROUNDS),
+          password: bcrypt.hashSync('Banana@12', SALT_ROUNDS),
           isAdmin: false,
           createdAt: new Date(),
           updatedAt: new Date()
         },
         {
-          name: 'Coco',
-          email: 'coco@coco.com',
-          password: bcrypt.hashSync('coco@12', SALT_ROUNDS),
+          name: 'Coconut',
+          email: 'coconut@coconut.com',
+          password: bcrypt.hashSync('Coconut@12', SALT_ROUNDS),
           isAdmin: false,
           createdAt: new Date(),
           updatedAt: new Date()
@@ -35,7 +35,7 @@ module.exports = {
         {
           name: 'Mango',
           email: 'mango@mango.com',
-          password: bcrypt.hashSync('mango@12', SALT_ROUNDS),
+          password: bcrypt.hashSync('Mango@12', SALT_ROUNDS),
           isAdmin: false,
           createdAt: new Date(),
           updatedAt: new Date()
@@ -43,7 +43,7 @@ module.exports = {
         {
           name: 'Grapes',
           email: 'grapes@grapes.com',
-          password: bcrypt.hashSync('grapes@12', SALT_ROUNDS),
+          password: bcrypt.hashSync('Grapes@12', SALT_ROUNDS),
           isAdmin: false,
           createdAt: new Date(),
           updatedAt: new Date()
@@ -51,7 +51,7 @@ module.exports = {
         {
           name: 'Orange',
           email: 'orange@orange.com',
-          password: bcrypt.hashSync('orange@12', SALT_ROUNDS),
+          password: bcrypt.hashSync('Orange@12', SALT_ROUNDS),
           isAdmin: false,
           createdAt: new Date(),
           updatedAt: new Date()
@@ -59,7 +59,7 @@ module.exports = {
         {
           name: 'Pineapple',
           email: 'pineapple@pineapple.com',
-          password: bcrypt.hashSync('pineapple@12', SALT_ROUNDS),
+          password: bcrypt.hashSync('Pineapple@12', SALT_ROUNDS),
           isAdmin: false,
           createdAt: new Date(),
           updatedAt: new Date()
@@ -67,7 +67,7 @@ module.exports = {
         {
           name: 'Pomegranate',
           email: 'pomegranate@pomegranate.com',
-          password: bcrypt.hashSync('pomegranate@12', SALT_ROUNDS),
+          password: bcrypt.hashSync('Pomegranate@12', SALT_ROUNDS),
           isAdmin: false,
           createdAt: new Date(),
           updatedAt: new Date()
@@ -75,7 +75,7 @@ module.exports = {
         {
           name: 'Avocado',
           email: 'avocado@avocado.com',
-          password: bcrypt.hashSync('avocado@12', SALT_ROUNDS),
+          password: bcrypt.hashSync('Avocado@12', SALT_ROUNDS),
           isAdmin: false,
           createdAt: new Date(),
           updatedAt: new Date()
@@ -83,7 +83,7 @@ module.exports = {
         {
           name: 'Papaya',
           email: 'papaya@papaya.com',
-          password: bcrypt.hashSync('papaya@12', SALT_ROUNDS),
+          password: bcrypt.hashSync('Papaya@12', SALT_ROUNDS),
           isAdmin: false,
           createdAt: new Date(),
           updatedAt: new Date()
@@ -91,7 +91,7 @@ module.exports = {
         {
           name: 'Watermelon',
           email: 'watermelon@watermelon.com',
-          password: bcrypt.hashSync('watermelon@12', SALT_ROUNDS),
+          password: bcrypt.hashSync('Watermelon@12', SALT_ROUNDS),
           isAdmin: false,
           createdAt: new Date(),
           updatedAt: new Date()
@@ -99,7 +99,7 @@ module.exports = {
         {
           name: 'Strawberry',
           email: 'strawberry@strawberry.com',
-          password: bcrypt.hashSync('strawberry@12', SALT_ROUNDS),
+          password: bcrypt.hashSync('Strawberry@12', SALT_ROUNDS),
           isAdmin: false,
           createdAt: new Date(),
           updatedAt: new Date()
@@ -107,7 +107,7 @@ module.exports = {
         {
           name: 'Cherry',
           email: 'cherry@cherry.com',
-          password: bcrypt.hashSync('cherry@12', SALT_ROUNDS),
+          password: bcrypt.hashSync('Cherry@12', SALT_ROUNDS),
           isAdmin: false,
           createdAt: new Date(),
           updatedAt: new Date()
@@ -115,7 +115,7 @@ module.exports = {
         {
           name: 'Apricot',
           email: 'apricot@apricot.com',
-          password: bcrypt.hashSync('apricot@12', SALT_ROUNDS),
+          password: bcrypt.hashSync('Apricot@12', SALT_ROUNDS),
           isAdmin: false,
           createdAt: new Date(),
           updatedAt: new Date()
@@ -123,7 +123,7 @@ module.exports = {
         {
           name: 'Kiwi',
           email: 'kiwi@kiwi.com',
-          password: bcrypt.hashSync('kiwi@12', SALT_ROUNDS),
+          password: bcrypt.hashSync('Kiwi@123', SALT_ROUNDS),
           isAdmin: false,
           createdAt: new Date(),
           updatedAt: new Date()
@@ -131,7 +131,7 @@ module.exports = {
         {
           name: 'Jackfruit',
           email: 'jackfruit@jackfruit.com',
-          password: bcrypt.hashSync('jackfruit@12', SALT_ROUNDS),
+          password: bcrypt.hashSync('Jackfruit@12', SALT_ROUNDS),
           isAdmin: false,
           createdAt: new Date(),
           updatedAt: new Date()
@@ -139,7 +139,7 @@ module.exports = {
         {
           name: 'Lime',
           email: 'lime@lime.com',
-          password: bcrypt.hashSync('lime@12', SALT_ROUNDS),
+          password: bcrypt.hashSync('Lime@12', SALT_ROUNDS),
           isAdmin: false,
           createdAt: new Date(),
           updatedAt: new Date()
@@ -147,7 +147,7 @@ module.exports = {
         {
           name: 'Peach',
           email: 'peach@peach.com',
-          password: bcrypt.hashSync('peach@12', SALT_ROUNDS),
+          password: bcrypt.hashSync('Peach@12', SALT_ROUNDS),
           isAdmin: false,
           createdAt: new Date(),
           updatedAt: new Date()
@@ -155,7 +155,7 @@ module.exports = {
         {
           name: 'Pear',
           email: 'pear@pear.com',
-          password: bcrypt.hashSync('pear@12', SALT_ROUNDS),
+          password: bcrypt.hashSync('Pear@12', SALT_ROUNDS),
           isAdmin: false,
           createdAt: new Date(),
           updatedAt: new Date()
@@ -163,7 +163,7 @@ module.exports = {
         {
           name: 'Tamarind',
           email: 'tamarind@tamarind.com',
-          password: bcrypt.hashSync('tamarind@12', SALT_ROUNDS),
+          password: bcrypt.hashSync('Tamarind@12', SALT_ROUNDS),
           isAdmin: false,
           createdAt: new Date(),
           updatedAt: new Date()
@@ -171,7 +171,7 @@ module.exports = {
         {
           name: 'Blueberry',
           email: 'blueberry@blueberry.com',
-          password: bcrypt.hashSync('blueberry@12', SALT_ROUNDS),
+          password: bcrypt.hashSync('Blueberry@12', SALT_ROUNDS),
           isAdmin: false,
           createdAt: new Date(),
           updatedAt: new Date()
@@ -179,7 +179,7 @@ module.exports = {
         {
           name: 'Raspberry',
           email: 'raspberry@raspberry.com',
-          password: bcrypt.hashSync('raspberry@12', SALT_ROUNDS),
+          password: bcrypt.hashSync('Raspberry@12', SALT_ROUNDS),
           isAdmin: false,
           createdAt: new Date(),
           updatedAt: new Date()
@@ -187,7 +187,7 @@ module.exports = {
         {
           name: 'Blackberry',
           email: 'blackberry@blackberry.com',
-          password: bcrypt.hashSync('blackberry@12', SALT_ROUNDS),
+          password: bcrypt.hashSync('Blackberry@12', SALT_ROUNDS),
           isAdmin: false,
           createdAt: new Date(),
           updatedAt: new Date()
@@ -195,7 +195,7 @@ module.exports = {
         {
           name: 'Dragonfruit',
           email: 'dragonfruit@dragonfruit.com',
-          password: bcrypt.hashSync('dragonfruit@12', SALT_ROUNDS),
+          password: bcrypt.hashSync('Dragonfruit@12', SALT_ROUNDS),
           isAdmin: false,
           createdAt: new Date(),
           updatedAt: new Date()
@@ -203,7 +203,7 @@ module.exports = {
         {
           name: 'Gooseberry',
           email: 'gooseberry@gooseberry.com',
-          password: bcrypt.hashSync('gooseberry@12', SALT_ROUNDS),
+          password: bcrypt.hashSync('Gooseberry@12', SALT_ROUNDS),
           isAdmin: false,
           createdAt: new Date(),
           updatedAt: new Date()
@@ -211,7 +211,7 @@ module.exports = {
         {
           name: 'Fig',
           email: 'fig@fig.com',
-          password: bcrypt.hashSync('fig@12', SALT_ROUNDS),
+          password: bcrypt.hashSync('Fig@1234', SALT_ROUNDS),
           isAdmin: false,
           createdAt: new Date(),
           updatedAt: new Date()
@@ -219,7 +219,7 @@ module.exports = {
         {
           name: 'Guava',
           email: 'guava@guava.com',
-          password: bcrypt.hashSync('guava@12', SALT_ROUNDS),
+          password: bcrypt.hashSync('Guava@12', SALT_ROUNDS),
           isAdmin: false,
           createdAt: new Date(),
           updatedAt: new Date()
@@ -227,7 +227,7 @@ module.exports = {
         {
           name: 'Muskmelon',
           email: 'muskmelon@muskmelon.com',
-          password: bcrypt.hashSync('muskmelon@12', SALT_ROUNDS),
+          password: bcrypt.hashSync('Muskmelon@12', SALT_ROUNDS),
           isAdmin: false,
           createdAt: new Date(),
           updatedAt: new Date()
@@ -235,7 +235,7 @@ module.exports = {
         {
           name: 'Olives',
           email: 'olives@olives.com',
-          password: bcrypt.hashSync('olives@12', SALT_ROUNDS),
+          password: bcrypt.hashSync('Olives@12', SALT_ROUNDS),
           isAdmin: false,
           createdAt: new Date(),
           updatedAt: new Date()
@@ -243,7 +243,7 @@ module.exports = {
         {
           name: 'Melon',
           email: 'melon@melon.com',
-          password: bcrypt.hashSync('melon@12', SALT_ROUNDS),
+          password: bcrypt.hashSync('Melon@12', SALT_ROUNDS),
           isAdmin: false,
           createdAt: new Date(),
           updatedAt: new Date()
@@ -251,7 +251,7 @@ module.exports = {
         {
           name: 'Mônica teste',
           email: 'monica.kerber@gmail.com',
-          password: bcrypt.hashSync('monica@12', SALT_ROUNDS),
+          password: bcrypt.hashSync('Monica@12', SALT_ROUNDS),
           isAdmin: true,
           createdAt: new Date(),
           updatedAt: new Date()
@@ -259,7 +259,7 @@ module.exports = {
         {
           name: 'Mônica teste 2',
           email: 'moniquinha_k@hotmail.com',
-          password: bcrypt.hashSync('moniquinha@12', SALT_ROUNDS),
+          password: bcrypt.hashSync('Moniquinha@12', SALT_ROUNDS),
           isAdmin: true,
           createdAt: new Date(),
           updatedAt: new Date()
@@ -267,7 +267,7 @@ module.exports = {
         {
           name: 'Mônica teste 3',
           email: 'mk.dalosto@gmail.com',
-          password: bcrypt.hashSync('mk.dalosto@12', SALT_ROUNDS),
+          password: bcrypt.hashSync('Mk.dalosto@12', SALT_ROUNDS),
           isAdmin: false,
           createdAt: new Date(),
           updatedAt: new Date()
@@ -275,7 +275,15 @@ module.exports = {
         {
           name: 'Rafael teste',
           email: 'rf.dalosto@gmail.com',
-          password: bcrypt.hashSync('rafael@12', SALT_ROUNDS),
+          password: bcrypt.hashSync('Rafael@12', SALT_ROUNDS),
+          isAdmin: true,
+          createdAt: new Date(),
+          updatedAt: new Date()
+        },
+        {
+          name: 'Shannon test',
+          email: 'shannon@quicargo.com',
+          password: bcrypt.hashSync('Shannon@12', SALT_ROUNDS),
           isAdmin: true,
           createdAt: new Date(),
           updatedAt: new Date()
