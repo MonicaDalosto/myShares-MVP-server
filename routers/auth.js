@@ -201,7 +201,7 @@ router.post('/checkResetPasswordToken', async (request, response, next) => {
 
     toData(resetToken);
 
-    return response.send({ Message: 'The Reset Password Token is valid!' });
+    return response.send({ message: 'The Reset Password Token is valid!' });
   } catch (error) {
     console.log(error);
     return response.status(400).send(error);
@@ -218,7 +218,7 @@ router.patch('/resetPassword', async (request, response, next) => {
     if (!isValidPassword || password !== confirmPassword) {
       return response.status(400).send({
         name: 'PasswordError',
-        message: 'Please provide correct data!'
+        message: 'Invalid Password! Please provide correct data!'
       });
     }
 
@@ -229,6 +229,13 @@ router.patch('/resetPassword', async (request, response, next) => {
         name: 'UserNotFound',
         message:
           'User not found! Please, request for your password to be reset again.'
+      });
+    }
+    if (user.passwordResetToken !== resetToken) {
+      return response.status(400).send({
+        name: 'UrlTokenAlreadyUsed',
+        message:
+          'Url already used! The url can be used just once. Please, request for your password to be reset again.'
       });
     }
 
