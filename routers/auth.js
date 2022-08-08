@@ -1,13 +1,17 @@
 const bcrypt = require('bcrypt');
 const { Router } = require('express');
+const generator = require('generate-password');
 const { toJWT, toData } = require('../auth/jwt');
 const authMiddleware = require('../auth/middleware');
 const userIsAdminMidd = require('../auth/userIsAdminMiddleware');
+const { SALT_ROUNDS, APP_URL } = require('../config/constants');
+const { validatePassword } = require('../utils/validatePassword');
+const {
+  buildResetPasswordEmail,
+  buildUserCreatedWithPasswordEmail
+} = require('../emails/passwordTemplate');
 const User = require('../models/').user;
 const Employee = require('../models/').employee;
-const { SALT_ROUNDS, FORGOT_PASSWORD_URL } = require('../config/constants');
-const { validatePassword } = require('../utils/validatePassword');
-const { buildResetPasswordEmail } = require('../emails/passwordTemplate');
 
 const router = new Router();
 
@@ -51,32 +55,29 @@ router.get('/me', authMiddleware, async (req, res) => {
 });
 
 // I will use this router, when the admin creates the new employee:
-// http -v POST :4000/auth/signup name=kiwi email=kiwi@kiwi.com department=operations password=kiwi isAdmin=false startDate=2019-03-01 Authorization:"Bearer token"
+// http -v POST :4000/auth/createEmployee name=moniquinha email=mk.dalosto@gmail.com department=operations isAdmin=false startDate=2019-03-01 Authorization:"Bearer token"
 router.post(
   '/createEmployee',
   authMiddleware,
   userIsAdminMidd,
   async (request, response) => {
-    const { name, email, department, password, isAdmin, startDate } =
-      request.body;
-    const isValidPassword = validatePassword(password);
-    // console.log(name, email, department, password, isAdmin, startDate);
-
-    if (
-      !name ||
-      !email ||
-      !password ||
-      !department ||
-      !startDate ||
-      !isValidPassword
-    ) {
-      return response.status(400).send({
-        message:
-          'Please provide valid name, email, password, department and start date of the new employee!'
-      });
-    }
-
     try {
+      const { name, email, department, isAdmin, startDate } = request.body;
+
+      if (!name || !email || !department || !startDate) {
+        return response.status(400).send({
+          message:
+            'Please provide valid name, email, department and start date of the new employee!'
+        });
+      }
+
+      const password = generator.generate({
+        length: 8,
+        numbers: true,
+        symbols: '!@#$%&*',
+        strict: true
+      });
+
       const newUser = await User.create({
         name,
         email,
@@ -88,6 +89,12 @@ router.post(
         startDate,
         department,
         userId: newUser.dataValues.id
+      });
+
+      buildUserCreatedWithPasswordEmail({
+        newUser,
+        password,
+        appUrl: APP_URL
       });
 
       response
@@ -179,7 +186,7 @@ router.post('/forgotPassword', async (request, response, next) => {
       passwordResetToken: resetToken
     });
 
-    const emailUrl = `${FORGOT_PASSWORD_URL}/reset-password/${resetToken}`;
+    const emailUrl = `${APP_URL}/reset-password/${resetToken}`;
 
     buildResetPasswordEmail(user, emailUrl);
 
