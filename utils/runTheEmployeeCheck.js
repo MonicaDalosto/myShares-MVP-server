@@ -55,9 +55,9 @@ const checkEmployeeContracts = async () => {
 
 const scheduleSendEmail = () => {
   cron.schedule(
-    '0 5 * * monday',
+    '0 10 * * 1',
     () => {
-      console.log('running a task every monday at 05:00am');
+      console.log('running a task every monday at 10:00am');
       checkEmployeeContracts();
     },
     {
