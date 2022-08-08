@@ -29,4 +29,41 @@ const buildResetPasswordEmail = (user, emailUrl) => {
   sendGridSendEmail(msg);
 };
 
-module.exports = { buildResetPasswordEmail };
+const buildUserCreatedWithPasswordEmail = ({ newUser, password, appUrl }) => {
+  const msg = {
+    to: newUser.email,
+    from: EMAIL_SENDER,
+    subject: `Your access of myShares system`,
+    text: `Your access of myShares system`,
+    html: `
+            <div>
+              <h1>The user has been created!</h1>
+              <p>
+              Hello, ${newUser.name}!
+              </p>
+              <p>
+                The "Company's team have created a user for you access the Shares System.
+              </p>
+              <p>
+                You can access the system <a href=${appUrl}>here</a>.
+              </p>
+              <p>
+                Your login information is:
+              </p>
+              <p>
+                Email: ${newUser.email}
+              </p>
+              <p>
+                Password: ${password}
+              </p>
+              <p>
+                Important!!! The password informed is temporary. Please, update your password as soon as you log in on the system. To do this, just access the "Settings" link on the menu list.
+              </p>
+            </div>
+          `
+  };
+
+  sendGridSendEmail(msg);
+};
+
+module.exports = { buildResetPasswordEmail, buildUserCreatedWithPasswordEmail };
