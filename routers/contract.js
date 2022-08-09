@@ -13,7 +13,6 @@ const { DEFAULT_COMPANY } = require('../config/constants');
 
 const router = new Router();
 
-// http -v POST :4000/contracts signatureDate=2020-01-01 companyValuation=2000000 totalCompanyShares=500000 grantedShares=3000 cliffDate=2021-01-01 employeeId=6 Authorization:"Bearer token"
 // Create a new Contract:
 router.post(
   '/',
@@ -48,9 +47,8 @@ router.post(
   }
 );
 
-// http -v :4000/contracts/calculation/1 Authorization:"Bearer token"
-// http -v :4000/contracts/calculation/3?specificDate=2022-12-31 Authorization:"Bearer token"
-// Execute the User Shares calculation: (the ? at the endpoint makes the id optional)
+// Execute the User Shares calculation: (the ? at the endpoint makes the values optionals):
+// This endpoint calculates also the Projection of the Shares Values:
 router.get(
   '/calculation/:id?:projectedValuation?:projectedDate?',
   authMiddleware,
@@ -58,8 +56,6 @@ router.get(
     const userIsAdmin = request.user.dataValues.isAdmin;
     const id =
       userIsAdmin && request.query.id ? request.query.id : request.user.id;
-
-    // console.log('the request inside the endpoint: ', request.query);
 
     try {
       // find user by pk and get his contracts
@@ -76,13 +72,13 @@ router.get(
 
       const companyValuation = request.query.projectedValuation
         ? Number(request.query.projectedValuation)
-        : company.currentValuation; // this projected valuation can be past from the client, then i can use this endpoint to get the projection;
+        : company.currentValuation;
 
       const specificDate = user.employee.isActive
         ? request.query.projectedDate || new Date()
-        : user.employee.endDate; // this projected date can be past from the client, then i can use this endpoint to get the projection;
+        : user.employee.endDate;
 
-      // do math
+      // execute the calculation:
       const fullContractsSummary = calculateSharesSpecificEmployee(
         user,
         companyValuation,
@@ -97,7 +93,6 @@ router.get(
 );
 
 // execute the shares calculation of the all employees:
-// http -v :4000/contracts/allemployeescalculation Authorization:"Bearer token"
 router.get(
   '/all-employees-calculation',
   authMiddleware,
@@ -117,9 +112,7 @@ router.get(
 
       const company = await Company.findByPk(DEFAULT_COMPANY);
 
-      // console.log('users inside the endpoint: ', users);
-
-      // do math
+      // execute the calculation:
       const allEmployeeContractsSummary = calculateSharesAllEmployees(
         users,
         company.currentValuation,
@@ -133,7 +126,7 @@ router.get(
   }
 );
 
-// http -v DELETE :4000/contracts/15 Authorization:"Bearer token"
+// Delete the contracts:
 router.delete(
   '/:id',
   authMiddleware,

@@ -19,7 +19,6 @@ router.get('/', authMiddleware, async (request, response, next) => {
   }
 });
 
-// http -v PUT :4000/company name="myCompany bv" currentValuation=5500000.00 totalCompanyShares=2750000 Authorization:"Bearer token"
 // Update the Company's valuation:
 router.put(
   '/',
@@ -45,16 +44,5 @@ router.put(
     }
   }
 );
-
-// http -v :4000/company/sendEmail
-router.get('/sendEmail', async (request, response, next) => {
-  try {
-    sendEmail();
-    response;
-  } catch (error) {
-    console.log(error);
-    return response.status(400).send('Something went wrong!');
-  }
-});
 
 module.exports = router;

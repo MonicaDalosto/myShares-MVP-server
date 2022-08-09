@@ -11,7 +11,7 @@ const Company = require('../models/').company;
 
 const router = new Router();
 
-// Get all the users/employees: http -v :4000/employees
+// Get all the users/employees:
 router.get(
   '/',
   authMiddleware,
@@ -36,27 +36,7 @@ router.get(
   }
 );
 
-// router.get(
-//   '/:id',
-//   authMiddleware,
-//   userIsAdminMidd,
-//   async (request, response, next) => {
-//     try {
-//       const { id } = request.params;
-//       const employee = await User.findByPk(id, {
-//         include: [Employee],
-//         attributes: { exclude: ['password'] }
-//       });
-
-//       return response.send(employee);
-//     } catch (error) {
-//       console.log(error);
-//       return response.status(400).send('Something went wrong!');
-//     }
-//   }
-// );
-
-// http -v PUT :4000/employees/update/2 name=berry email=berry@berry.com isAdmin=true startDate="2015-06-25" isActive=false department=Marketing endDate="2018-11-04" Authorization:"Bearer token"
+// Update the employee's data:
 router.put(
   '/update/:id',
   authMiddleware,
@@ -97,8 +77,6 @@ router.put(
 
       const setIsAdmin = !isActive ? false : isAdmin;
 
-      // console.log('setIsAdmin: ', setIsAdmin);
-
       await user.update({ name, email, isAdmin: setIsAdmin });
 
       await employee.update({
@@ -116,9 +94,7 @@ router.put(
   }
 );
 
-//
-
-// http -v DELETE :4000/employees/delete/12  Authorization:"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTY1NzcxMjE5NCwiZXhwIjoxNjU3NzE5Mzk0fQ.pZ5_yyHab2pWg6CmrQVRDT8CpM5xHDl8ORxc6BczBEQ"
+// Delete the user/employee:
 router.delete(
   '/delete/:id',
   authMiddleware,
@@ -147,12 +123,6 @@ router.delete(
             where: { isActive: true }
           }
         });
-
-        // console.log(
-        //   'checkOtherAdmin: ',
-        //   checkOtherAdmin.length,
-        //   checkOtherAdmin
-        // );
 
         if (checkOtherAdmin.length === 0) {
           return response.status(400).send({
