@@ -53,7 +53,6 @@ function calculateShares(
     };
   });
 
-  // math
   return employeeContractsSummary;
 }
 
@@ -93,7 +92,6 @@ const calculateSharesSpecificEmployee = (
 ) => {
   const employeeContractsSummary = calculateShares(
     user,
-    // user.employee.contracts,
     companyValuation,
     totalCompanyShares,
     specificDate
@@ -115,8 +113,8 @@ const calculateSharesSpecificEmployee = (
   const fullContractsSummary = {
     name: user.name,
     email: user.email,
-    employeeContractsSummary, // [{}, {} ,{}]
-    totalContractsSummary, // 23534
+    employeeContractsSummary,
+    totalContractsSummary,
     grantedXOwnedShares
   };
 
@@ -136,12 +134,10 @@ const calculateSharesAllEmployees = (
     // invoke the calculateShares function passing the userContracts >> return the summary
     const employeeContractsSummary = calculateShares(
       user,
-      // user.employee.contracts,
       companyValuation,
       totalCompanyShares,
       specificDate
     );
-    // console.log(employeeContractsSummary);
     // invoke the calculateTheTotalEachEmployee function passing the employeeContractsSummary
     const totalOfEmployeeShares = calculateTheTotalOfContracts(
       employeeContractsSummary,
@@ -165,8 +161,3 @@ module.exports = {
   calculateSharesSpecificEmployee,
   calculateSharesAllEmployees
 };
-
-// call this from route and from email generation.
-
-// Trigger something once a month (or periodically) => cron jobs = https://www.npmjs.com/package//node-cron
-// for the email sending => nodemailer

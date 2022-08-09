@@ -54,8 +54,7 @@ router.get('/me', authMiddleware, async (req, res) => {
   res.status(200).send({ ...req.user.dataValues });
 });
 
-// I will use this router, when the admin creates the new employee:
-// http -v POST :4000/auth/createEmployee name=moniquinha email=mk.dalosto@gmail.com department=operations isAdmin=false startDate=2019-03-01 Authorization:"Bearer token"
+// the admin creates the new employee:
 router.post(
   '/createEmployee',
   authMiddleware,
@@ -114,7 +113,7 @@ router.post(
   }
 );
 
-// http -v PATCH :4000/auth/changePassword password=apple@12 newPassword=apple@12 confirmNewPassword=apple@12 Authorization:"Bearer token"
+// Change the password
 router.patch(
   '/changePassword',
   authMiddleware,
@@ -164,7 +163,7 @@ router.patch(
   }
 );
 
-// http -v POST :4000/auth/forgotPassword email=monica.kerber@gmail.com
+// When the user request to reset the password, this endpoint sends the e-mail to reset it:
 router.post('/forgotPassword', async (request, response, next) => {
   try {
     const { email } = request.body;
@@ -201,7 +200,7 @@ router.post('/forgotPassword', async (request, response, next) => {
   }
 });
 
-// http -v POST :4000/auth/checkResetPasswordToken resetToken=token
+// Check if the token to change the password is still valid:
 router.post('/checkResetPasswordToken', async (request, response, next) => {
   try {
     const { resetToken } = request.body;
@@ -215,7 +214,7 @@ router.post('/checkResetPasswordToken', async (request, response, next) => {
   }
 });
 
-// http -v PATCH :4000/auth/resetPassword resetToken=token password=Monica@123 confirmPassword=Monica@123
+// Change the password using the reset password token:
 router.patch('/resetPassword', async (request, response, next) => {
   try {
     const { resetToken, password, confirmPassword } = request.body;
