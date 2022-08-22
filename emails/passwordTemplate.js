@@ -22,6 +22,7 @@ const buildResetPasswordEmail = (user, emailUrl) => {
               <p>
                 If you are unable to reset your password within this time, please, request for your password to be reset again.
               </p>
+              <p style="height: 30px; ">Kind regards, Company's Team</p>
             </div>
           `
   };
