@@ -11,7 +11,7 @@ const sendUpdatedSharesEmail = user => {
     html: `
           <div style="width: 800px; font-family: Arial, Helvetica, sans-serif; color: #343a40; font-size: 12px; text-align: center; ">
             <h2 style="font-size: 16px; height: 30px; ">Hi, ${user.name} </h2>
-            <p style="height: 30px; ">Your shares from Company have been updated, here you can see the updated value:</p>
+            <p style="height: 30px; ">View below the updated value of your Shares at Company:</p>
             <table style="border-collapse: collapse; font-size: 14px; width: 700px; border: thin solid #f8f8f8; font-family: Arial, Helvetica, sans-serif;">
               <thead>
                 <tr style="background-color: #f8f8f8; height: 60px; font-size: 14px">
@@ -57,6 +57,7 @@ const sendUpdatedSharesEmail = user => {
               </tfoot>
             </table>
             <p style="height: 30px; ">You can see more information about your Shares on <a href="https://myshares.netlify.app/login">myShares</a> website.</p>
+            <p style="height: 30px; ">Kind regards, Company's Team</p>
           </div>
           `
   };
